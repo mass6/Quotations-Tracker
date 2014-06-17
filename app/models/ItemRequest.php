@@ -23,6 +23,7 @@ class ItemRequest extends BaseModel
         'description' 		=>	'max:250',
         'category_id'       =>  'required|integer|exists:categories,id',
         'estimated_volume'  =>  'max:250',
+        'current_uom'       =>  'max:45',
         'current_price'     =>  'max:45',
         'created_by'        =>  'required|integer|exists:users,id',
         'assigned_to'       =>  'required|integer|exists:users,id',

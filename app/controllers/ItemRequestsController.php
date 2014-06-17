@@ -23,7 +23,7 @@ class ItemRequestsController extends \BaseController {
 	{
         // grab entities for populating drop-down lists
         $customersList = Customer::lists('name', 'id');
-        $categoriesList = Category::lists('name', 'id');
+        $categoriesList = Category::orderBy('id')->lists('name', 'id');
         $attributesList = Attribute::lists('name', 'id');
         $usersList = User::lists('first_name', 'id');
 
@@ -95,7 +95,7 @@ class ItemRequestsController extends \BaseController {
         }
         // grab entities for populating drop-down lists
         $customersList = Customer::lists('name', 'id');
-        $categoriesList = Category::lists('name', 'id');
+        $categoriesList = Category::orderBy('id')->lists('name', 'id');
         $attributesList = Attribute::lists('name', 'id');
         $usersList = User::lists('first_name', 'id');
 

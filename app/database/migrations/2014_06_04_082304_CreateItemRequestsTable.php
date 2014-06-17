@@ -24,6 +24,7 @@ class CreateItemRequestsTable extends Migration {
             $table->text('description')->nullable();
             $table->integer('category_id');
             $table->string('estimated_volume')->nullable();
+            $table->string('current_uom')->nullable();
             $table->float('current_price')->nullable();
             $table->text('attributes')->nullable();
             $table->integer('created_by');

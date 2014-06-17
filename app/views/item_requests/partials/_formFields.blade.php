@@ -48,7 +48,7 @@
 
 <div class="form-group">
     {{ Form::label('category_id', 'Product Category:') }}
-    {{ Form::select('category_id', $categoriesList, 1, ['class'=>'form-control', 'id'=>'category'] ) }}
+    {{ Form::select('category_id', $categoriesList, null, ['class'=>'form-control', 'id'=>'category', 'placeholder' => 1] ) }}
     {{ $errors->first('category_id', '<span class="label label-warning">:message</span>') }}
 </div>
 
@@ -56,6 +56,11 @@
     {{ Form::label('estimated_volume', 'Estimated Volumes:') }}
     {{ Form::text('estimated_volume', null, ['class' => 'form-control']) }}
     {{ $errors->first('estimated_volume', '<span class="label label-warning">:message</span>') }}
+</div>
+<div class="form-group">
+    {{ Form::label('current_uom', 'Current UOM:') }}
+    {{ Form::text('current_uom', null, ['class' => 'form-control']) }}
+    {{ $errors->first('current_uom', '<span class="label label-warning">:message</span>') }}
 </div>
 <div class="form-group">
     {{ Form::label('current_price', 'Current Price:') }}
@@ -163,10 +168,10 @@
                 var cbxRequired = "required" + serial;
                 if (attributes[i][1] === "required" )
                     {
-                        inner += "<input type='checkbox' name='" + 'attributes[' + i + '][1]' + "'" + 'value="required" checked="checked" class="">Required<br>';
+                        inner += "<input type='checkbox' name='" + 'attributes[' + serial + '][1]' + "'" + 'value="required" checked="checked" class="">Required<br>';
                     } else
                     {
-                        inner += "<input type='checkbox' name='" + 'attributes[' + i + '][1]' + "'" + 'value="required" class="">Required<br>';
+                        inner += "<input type='checkbox' name='" + 'attributes[' + serial + '][1]' + "'" + 'value="required" class="">Required<br>';
                     }
 
 

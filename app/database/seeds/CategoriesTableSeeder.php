@@ -27,6 +27,11 @@ class CategoriesTableSeeder extends Seeder
         ));
 
         Category::create(array(
+            'name'     	    => 'Construction',
+            'description'  	=> 'Construction materials'
+        ));
+
+        Category::create(array(
             'name'     	    => 'Chemicals',
             'description'  	=> 'Chemical products'
         ));
@@ -39,6 +44,11 @@ class CategoriesTableSeeder extends Seeder
         Category::create(array(
             'name'     	    => 'Plasic Bags',
             'description'  	=> 'Plastic bags'
+        ));
+
+        Category::create(array(
+            'name'     	    => 'Cleaning',
+            'description'  	=> 'Cleaning materials and supplies'
         ));
 
         Category::create(array(

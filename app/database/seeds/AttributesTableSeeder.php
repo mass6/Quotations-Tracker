@@ -17,24 +17,10 @@ class AttributesTableSeeder extends Seeder
         Attribute::truncate();
 
         Attribute::create(array(
-            'name'     	    => 'UOM',
-            'description'  	=> 'Unit of measure the product is sold in',
-            'type'          => 'text',
-        ));
-        Attribute::create(array(
-            'name'     	    => 'Packaging',
-            'description'  	=> 'How is the product packed',
-            'type'          => 'text',
-        ));
-        Attribute::create(array(
-            'name'     	    => 'Delivery',
-            'description'  	=> 'Delivery options',
-            'type'          => 'textarea',
-        ));
-        Attribute::create(array(
-            'name'     	    => 'Environmental',
-            'description'  	=> 'Is the product environmentally friendly? (i.e. "Green")',
-            'type'          => 'boolean',
+            'name'     	    => 'Material',
+            'description'  	=> 'product material',
+            'type'          => 'select',
+            'values'        => '["Steel","Copper","Plastic","Wool"]',
         ));
         Attribute::create(array(
             'name'     	    => 'Color',
@@ -48,6 +34,21 @@ class AttributesTableSeeder extends Seeder
             'type'          => 'select',
             'values'        => '["White","Green","Yellow","Red","N/A"]',
         ));
-
+        Attribute::create(array(
+            'name'     	    => 'Environmental',
+            'description'  	=> 'Is the product environmentally friendly? (i.e. "Green")',
+            'type'          => 'boolean',
+        ));
+        Attribute::create(array(
+            'name'     	    => 'BTUs',
+            'description'  	=> 'BTU rating',
+            'type'          => 'text'
+        ));
+        Attribute::create(array(
+            'name'     	    => 'Embossing',
+            'description'  	=> 'Embossing type',
+            'type'          => 'select',
+            'values'        => '["None","Embossed","Print"]'
+        ));
     }
 }

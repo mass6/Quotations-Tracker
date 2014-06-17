@@ -1,153 +1,117 @@
 
+    {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}
+        <fieldset>
+          <legend>Complete the fields below to add a new quotation</legend>
 
-<div class="row">
-          <div class="col-lg-10">
-            <div class="well bs-component">
-            {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}              
-                <fieldset>
-                  <legend>Complete the fields below to add a new quotation</legend>
+          <!-- Supplier -->
+          <div class="form-group">
+            {{ Form::label('supplier', 'Supplier / Validity Date', ['class'=>'col-lg-2 control-label']) }}
+            <div class="col-lg-7">
+                {{ Form::select('supplier', $suppliers, null, ['id' => 'supplier', 'class' => 'form-control']) }}
+              <span class="pull-right">* Required</span>
+              <span class="help-block">Supplier from which this quotation was received.</span>
+            </div>
 
-                  <!-- Supplier -->
-                  <div class="form-group">
-                    <label for="supplier" class="col-lg-2 control-label">Supplier</label>
-                    <div class="col-lg-10">
-                      <select class="form-control" id="select">
-                        <option>Galaxy</option>
-                        <option>36S</option>
-                      </select>  
-                      <span class="pull-right">* Required</span>
-                      <span class="help-block">Supplier from which this quotation was received.</span>
-                    </div>
-                  </div>
-                  
-                  <!-- productName -->
-                   <div class="form-group">
-                        <label for="productName" class="col-lg-2 control-label">Product Name/Code</label>
-                        <div class="col-lg-7">
-                          <input class="form-control input-append" required="required" name="productName" id="productName" placeholder="Product Name" type="text">
-                           <span class="pull-right @brand-primary">* Required</span>
-                           <span class="help-block">Product name given from the supplier</span>
-                        </div>                   
+              <!-- validity date -->
+              <div class="col-lg-3">
+                  {{ Form::text('valid_until', null, ['id'=>'valid_until','class'=>'form-control']) }}
+                  <span class="pull-right">* Required</span>
+                  <span class="help-block">Date for which this quotation is valid for.</span>
+              </div>
+          </div>
 
-                             
-                      <!-- prodcutCode -->
-                       
-                        <div class="col-lg-3">
-                          <input class="form-control" name="prodcutCode" id="prodcutCode" placeholder="Product Code" type="text">
-                          <span class="help-block">Supplier product code</span>
-                        </div>
-                  </div>
-                  
-                  <!-- description -->
-                  <div class="form-group">
-                    <label for="description" class="col-lg-2 control-label">Description</label>
-                    <div class="col-lg-10">
-                      <textarea class="form-control" rows="3" id="textArea"></textarea>
-                      <span class="pull-right">* Required</span>
-                      <span class="help-block">Product description, including any relevant product specs or attributes</span>
-                    </div>
-                  </div>
+          <!-- productName -->
+           <div class="form-group">
+               {{ Form::label('productName', 'Product Name/Code', ['class'=>'col-lg-2 control-label']) }}
+                <div class="col-lg-7">
+                  {{ Form::text('productName', null, ['id'=>'productName','class'=>'form-control input-append', 'placeholder'=>'Product Name']) }}
+                   <span class="pull-right @brand-primary">* Required</span>
+                   <span class="help-block">Product name given from the supplier</span>
+                </div>
 
-                  <!-- uom -->
-                  <div class="form-group">
-                    <label for="uom" class="col-lg-2 control-label">UOM / Price</label>
-                    <div class="col-lg-5">
-                      <input type="text" class="form-control" name="uom" placeholder="UOM">
-                       <span class="pull-right">* Required</span>              
-                      <span class="help-block">Purchase unit of measure</span>
-                    </div>  
-                  <!-- uom price-->
-                    <div class="col-lg-5">
-                    <span class="input-group-addon">$</span>
-                      <input type="text" class="form-control" name="uom_price" placeholder="Price">
-                       <span class="pull-right">* Required</span>              
-                      <span class="help-block">Purchase unit of measure</span>
-                    </div>                      
-                  </div>
 
-                  <!-- packing -->
-                  <div class="form-group">
-                    <label for="packaging" class="col-lg-2 control-label">Packaging / Price</label>
-                    <div class="col-lg-5">
-                      <input type="text" class="form-control" name="packaging" placeholder="Packaging">
-                       <span class="pull-right">* Required</span>              
-                      <span class="help-block">Inner pack type/quantity</span>
-                    </div>  
-                  <!-- pack price-->
-                    <div class="col-lg-5">
-                      <span class="input-group-addon">$</span>
-                      <input type="text" class="form-control" name="pack_price" placeholder="Pack Price">
-                       <span class="pull-right">* Required</span>              
-                      <span class="help-block">Purchase price per inner pack</span>
-                    </div>                      
-                  </div>
+              <!-- prodcutCode -->
 
-                  <!-- Supplier -->
-                  <div class="form-group">
-                    <label for="inputPassword" class="col-lg-2 control-label">Password</label>
-                    <div class="col-lg-10">
-                      <input class="form-control" id="inputPassword" placeholder="Password" type="password">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox"> Checkbox
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                <div class="col-lg-3">
+                  {{ Form::text('prodcutCode', null, ['id'=>'prodcutCode','class'=>'form-control','placeholder'=>'Product Code']) }}
+                  <span class="help-block">Supplier product code</span>
+                </div>
+          </div>
 
-                  <!-- Supplier -->
-                  <div class="form-group">
-                    <label class="col-lg-2 control-label">Radios</label>
-                    <div class="col-lg-10">
-                      <div class="radio">
-                        <label>
-                          <input name="optionsRadios" id="optionsRadios1" value="option1" checked="" type="radio">
-                          Option one is this
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <label>
-                          <input name="optionsRadios" id="optionsRadios2" value="option2" type="radio">
-                          Option two can be something else
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+          <!-- description -->
+          <div class="form-group">
+            <label for="description" class="col-lg-2 control-label">Description</label>
+            <div class="col-lg-10">
+                {{ Form::textarea('description', null, ['id'=>'description','class'=>'form-control','rows'=>4,'placeholder'=>'Product Description']) }}
+              <span class="pull-right">* Required</span>
+              <span class="help-block">Product description, including any relevant product specs or attributes</span>
+            </div>
+          </div>
 
-                  <!-- Supplier -->
-                  <div class="form-group">
-                    <label for="select" class="col-lg-2 control-label">Selects</label>
-                    <div class="col-lg-10">
-                      <select class="form-control" id="select">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                      <br>
-                      <select multiple="" class="form-control">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
-                    </div>
-                  </div>
+          <!-- uom -->
+          <div class="form-group">
+            <label for="uom" class="col-lg-2 control-label">UOM / Price</label>
+            <div class="col-lg-5">
+              {{ Form::text('uom', null, ['id'=>'uom','class'=>'form-control','placeholder'=>'UOM']) }}
+               <span class="pull-right">* Required</span>
+              <span class="help-block">Purchase unit of measure</span>
+            </div>
+          <!-- uom price-->
+            <div class="col-lg-3">
+                {{ Form::text('uom_price', null, ['id'=>'uom_price','class'=>'form-control','placeholder'=>'Price']) }}
+               <span class="pull-right">* Required</span>
+              <span class="help-block">Purchase price per unit of measure</span>
+            </div>
+           <!-- min qty-->
+            <div class="col-lg-2">
+                {{ Form::text('min_qty', null, ['id'=>'min_qty','class'=>'form-control','placeholder'=>'Minimum Qty']) }}
 
-                  <!-- Supplier -->
-                  <div class="form-group">
-                    <div class="col-lg-10 col-lg-offset-2">
-                      <button class="btn btn-default">Cancel</button>
-                      <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                  </div>
-                  
-                  <!-- end form -->
+              <span class="help-block">Minimum qty that must be purchased</span>
+            </div>
+          </div>
 
-                </fieldset>
-              </form>
-            <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div></div>
-          </div>          
-        </div>
+          <!-- packing -->
+          <div class="form-group">
+            <label for="packaging" class="col-lg-2 control-label">Packaging / Price</label>
+            <div class="col-lg-5">
+               {{ Form::text('packaging', null, ['id'=>'packaging','class'=>'form-control','placeholder'=>'Packaging']) }}
+               <span class="pull-right">* Required</span>
+              <span class="help-block">Inner pack type/quantity</span>
+            </div>
+          <!-- pack price-->
+            <div class="col-lg-5">
+               {{ Form::text('pack_price', null, ['id'=>'pack_price','class'=>'form-control','placeholder'=>'Pack Price']) }}
+               <span class="pull-right">* Required</span>
+              <span class="help-block">Purchase price per inner pack</span>
+            </div>
+          </div>
+
+            <!-- delivery notes -->
+            <div class="form-group">
+                <label for="delivery_notes" class="col-lg-2 control-label">Delivery Notes</label>
+                <div class="col-lg-10">
+                    {{ Form::textarea('delivery_notes', null, ['id'=>'delivery_notes','class'=>'form-control','rows'=>4,'placeholder'=>'Delivery Notes']) }}
+                    <span class="pull-right">* Required</span>
+                    <span class="help-block">Notes, comments, and delivery options and/or restrictions</span>
+                </div>
+            </div>
+
+            <!-- description -->
+            <div class="form-group">
+                <label for="notes" class="col-lg-2 control-label">Notes and Comments</label>
+                <div class="col-lg-10">
+                    {{ Form::textarea('notes', null, ['id'=>'notes','class'=>'form-control','rows'=>4,'placeholder'=>'Notes and comments']) }}
+                    <span class="help-block">Any relevant notes and/or comments </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('quotations.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
+            </div>
+
+
+            <!-- end form -->
+
+        </fieldset>
+
+    <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div>

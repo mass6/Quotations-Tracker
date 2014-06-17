@@ -46,6 +46,24 @@ Route::group(array('before' => 'auth'), function()
 
     // Quotations
     Route::resource('quotations', 'QuotationsController');
+    Route::post( 'quotations/select', array(
+        'as' => 'quotations.select',
+        'uses' => 'QuotationsController@select'
+    ));
+
+
+    //Settings: show form to create settings
+    Route::get( '/settings/new', array(
+        'as' => 'settings.new',
+        'uses' => 'SettingsController@add'
+    ) );
+
+//Settings: create a new setting
+    Route::post( '/settings', array(
+        'as' => 'settings.create',
+        'uses' => 'SettingsController@create'
+    ) );
+
 
 });
 
