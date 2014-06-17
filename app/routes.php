@@ -46,10 +46,12 @@ Route::group(array('before' => 'auth'), function()
 
     // Quotations
     Route::resource('quotations', 'QuotationsController');
-    Route::post( 'quotations/select', array(
+    Route::post( '/quotations/select', array(
         'as' => 'quotations.select',
         'uses' => 'QuotationsController@select'
     ));
+
+    Route::get('/test', 'QuotationsController@test');
 
 
     //Settings: show form to create settings
@@ -66,6 +68,8 @@ Route::group(array('before' => 'auth'), function()
 
 
 });
+
+
 
 // Admin routes
 Route::group(array('before' => 'auth|admin'), function()

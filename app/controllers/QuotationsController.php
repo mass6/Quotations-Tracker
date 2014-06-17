@@ -10,7 +10,7 @@ class QuotationsController extends \BaseController {
 	public function index()
 	{
         $quotations = Quotation::all();
-		return View::make('quotations.index', array('title' => 'quotations'));
+		return View::make('quotations.index', compact('quotations'));
 	}
 
 
@@ -35,6 +35,8 @@ class QuotationsController extends \BaseController {
 
     public function select() {
 
+
+
         //check if its our form
         if ( Session::token() !== Input::get( '_token' ) ) {
             return Response::json( array(
@@ -42,16 +44,19 @@ class QuotationsController extends \BaseController {
             ) );
         }
 
-        $item_request_id = Input::get( 'item_request' );
-        $user = ItemRequest::find($item_request_id)->assignedTo->first_name;
+        $item_request = ItemRequest::find(Input::get( 'item_request' ));
+        $attributes = $this->setAttributesArray(json_decode($item_request->attributes));
+        $user = $item_request->assignedTo->first_name;
+
         //.....
         //validate data
         //and then store it in DB
         //.....
 
         $response = array(
-            'status' => 'new',
             'success' => true,
+            'item_request' => json_decode($item_request),
+            'attributes' => $attributes,
             'user' => $user,
         );
 
@@ -66,7 +71,7 @@ class QuotationsController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+        return $input = Input::all();
 	}
 
 
@@ -134,5 +139,48 @@ class QuotationsController extends \BaseController {
 
     }
 
+    protected function setAttributesArray($attArray)
+    {
+        if(isset($attArray))
+        {
+            $attributes = array();
+            $counter = 1;
+            foreach ($attArray as $attribute)
+            {
+                $attObj = Attribute::find($attribute[0]);
+
+                $array = array();
+                // set ID
+                $array[] = ($attribute[0]);
+
+                // set required/optional
+                if(isset($attribute[1])){
+                    $array[] = $attribute[1];
+                } else {
+                    $array[] = "optional";
+                }
+
+                // set Name
+                $array[] = $attObj->name;
+
+                // set type
+                $array[] = $attObj->type;
+
+                // set values
+                if ($attObj->type == "select")
+                {
+                    $array[] = json_decode($attObj->values);
+                } else
+                    $array[] = null;
+
+                // add array object as index in master array
+                $attributes[$counter] = $array;
+                $counter++;
+            }
+            return $attributes;
+        }
+        else
+            return false;
+    }
 
 }

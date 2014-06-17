@@ -78,6 +78,11 @@
     {{ $errors->first('assigned_to', '<span class="label label-warning">:message</span>') }}
 </div>
 <div class="form-group">
+    {{ Form::label('notes', 'Notes:') }}
+    {{ Form::textarea('notes', null, ['class' => 'form-control', 'rows'=>'5', 'id' => 'notes']) }}
+    {{ $errors->first('notes', '<span class="label label-warning">:message</span>') }}
+</div>
+<div class="form-group">
     {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('item-requests.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
 </div>
 
@@ -126,6 +131,7 @@
     }
 
     function setAttributes(attributes){
+        console.log(attributes)
         //var attributeCount = Object.keys(attributes).length;
         var attributeCount = attributes.length;
         //var asgnatts = <?php //echo json_encode($attvals); ?> ;

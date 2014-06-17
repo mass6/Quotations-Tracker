@@ -1,3 +1,10 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $( "#valid_until" ).datepicker();
+    });
+</script>
 
     {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}
         <fieldset>
@@ -14,7 +21,8 @@
 
               <!-- validity date -->
               <div class="col-lg-3">
-                  {{ Form::text('valid_until', null, ['id'=>'valid_until','class'=>'form-control']) }}
+                  {{ Form::input('date','valid_until', null, ['id'=>'valid_until','class'=>'form-control']) }}
+
                   <span class="pull-right">* Required</span>
                   <span class="help-block">Date for which this quotation is valid for.</span>
               </div>
@@ -46,6 +54,11 @@
               <span class="pull-right">* Required</span>
               <span class="help-block">Product description, including any relevant product specs or attributes</span>
             </div>
+          </div>
+
+            <!-- attributes -->
+          <div id="product-attributes" style="display:none">
+
           </div>
 
           <!-- uom -->
@@ -115,3 +128,5 @@
         </fieldset>
 
     <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div>
+
+

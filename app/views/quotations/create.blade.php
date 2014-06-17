@@ -22,7 +22,7 @@
             'required' => true,
             'class' => 'form-control'
             ) ) }}
-            <span class="help-block">Select an item request to attach the new quotation to</span>
+            <span id="selecthelper" class="help-block">Select an item request to attach the new quotation to</span>
         </div>
 
         <div class="col-lg-3">

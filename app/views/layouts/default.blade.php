@@ -7,11 +7,12 @@
     <title>@if (isset($title)) {{ $title }} @else My App @endif</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/datepicker.css') }}">
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/styles.css') }}">
+      <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/datepicker.css') }}">
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-     @yield('links')
+      @yield('links')
     
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

@@ -27,6 +27,7 @@ class CreateItemRequestsTable extends Migration {
             $table->string('current_uom')->nullable();
             $table->float('current_price')->nullable();
             $table->text('attributes')->nullable();
+            $table->text('notes')->nullable();
             $table->integer('created_by');
             $table->integer('assigned_to');
 			$table->timestamps();
