@@ -30,13 +30,12 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Customer</th>
+            <th>Item Request</th>
             <th>Product Name</th>
-            <th>Request Reference</th>
-            <th>Category</th>
-            <th>Status</th>
-            <th>Assigned To</th>
-            <th>Created</th>
+            <th>Supplier</th>
+            <th>Validity</th>
+            <th>UOM</th>
+            <th>Price</th>
             <th>Options</th>
             <th></th>
         </tr>
@@ -45,16 +44,15 @@
         @foreach ($quotations as $quotation)
         <tr>
             <td><em>{{ $quotation->id }}</em></td>
-            <td>{{ $quotation->customer->name }}</td>
-            <td>{{ $quotation->name }}</td>
-            <td>{{ $quotation->reference }}</td>
-            <td>{{ $quotation->category->name }}</td>
-            <td>{{ $quotation->label($quotation->status) }}</td>
-            <td>{{ $quotation->assignedTo->first_name }}</td>
-            <td>{{ $quotation->created_at->format('d-m-Y') }}</td>
-            <td>{{ link_to_route('item-requests.edit', 'View / Edit', array($quotation->id), array('class' => 'btn btn-primary')) }}</td>
+            <td>{{ $quotation->itemRequest['name'] }}</td>
+            <td>{{ $quotation->product_name }}</td>
+            <td>{{ $quotation->supplier->name }}</td>
+            <td>{{ $quotation->valid_until }}</td>
+            <td>{{ $quotation->uom }}</td>
+            <td>{{ $quotation->uom_price }}</td>
+            <td>{{ link_to_route('quotations.edit', 'View / Edit', array($quotation->id), array('class' => 'btn btn-primary')) }}</td>
             <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('item-requests.destroy', $quotation->id))) }}
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('quotations.destroy', $quotation->id))) }}
                 {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                 {{ Form::close() }}
             </td>

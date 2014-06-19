@@ -11,14 +11,15 @@
     'class' => 'form-container'
     ) ) }}
 
-    <div class="form-group col-lg-10">
+    <fieldset>
+    <div id="div_item_request_select" class="well bs-component form-group col-lg-10">
         <div class="col-lg-10">
-            {{ Form::label( 'item_request', 'Item Request:', ['class' => 'control-label'] ) }}
+            {{ Form::label( 'item_request_select', 'Item Request:', ['class' => 'control-label'] ) }}
         </div>
 
         <div class="col-lg-7">
-            {{ Form::select( 'item_request', $itemRequests,null, array(
-            'id' => 'item_request',
+            {{ Form::select( 'item_request_select', $itemRequests,null, array(
+            'id' => 'item_request_select',
             'required' => true,
             'class' => 'form-control'
             ) ) }}
@@ -32,7 +33,7 @@
             ) ) }}
         </div>
     </div>
-
+    </fieldset>
     {{ Form::close() }}
 
     <div class="row" id="form-container" style="display:none;">
@@ -49,6 +50,6 @@
 
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('js/settings/select.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('js/quotations/select.js') }}"></script>
 
 @stop

@@ -67,6 +67,16 @@ class ItemRequest extends BaseModel
     }
 
     /**
+     * Relation definition to Quotation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function quotations()
+    {
+        return $this->hasMany('Quotation', 'item_request');
+    }
+
+    /**
      * Relation definition to User (assignedTo)
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

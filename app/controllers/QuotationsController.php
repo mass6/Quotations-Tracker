@@ -35,8 +35,6 @@ class QuotationsController extends \BaseController {
 
     public function select() {
 
-
-
         //check if its our form
         if ( Session::token() !== Input::get( '_token' ) ) {
             return Response::json( array(
@@ -55,7 +53,9 @@ class QuotationsController extends \BaseController {
 
         $response = array(
             'success' => true,
-            'item_request' => json_decode($item_request),
+            'item_request' => $item_request->id,
+            'item_request_name' => $item_request->name,
+            'item_request_created' => $item_request->created_at,
             'attributes' => $attributes,
             'user' => $user,
         );
@@ -71,7 +71,30 @@ class QuotationsController extends \BaseController {
 	 */
 	public function store()
 	{
-        return $input = Input::all();
+//        return Input::all();
+
+        $input = Input::except('attributes');
+        $input['attribute_values'] = json_encode(Input::get('attributes'));
+        return Input::all();
+        // set current logged in user as the created by id
+        $input['created_by'] = Sentry::getUser()->id;
+
+        $quotation = new Quotation($input);
+        if (! $quotation->save())
+        {
+            return Redirect::back()->withInput()->withErrors($quotation->getErrors())
+                ->with('flash_message', 'There were validation issues')
+                ->with('success', false)
+                ->with('item_request', $input['item_request'])
+                ->with('revalidate', 'revalidate');
+        }
+        else
+        {
+            return Redirect::route('quotations.index')
+                ->with('flash_message', 'Quotation was successfully created.')
+                ->with('success', true);
+        }
+
 	}
 
 
@@ -95,7 +118,19 @@ class QuotationsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		//
+        $quotation = Quotation::find($id);
+        return $quotation->attributes;
+        $user = User::find(Sentry::getUser()->id);
+        if ($quotation->createdBy != $user && $quotation->status == 'draft')
+        {
+            return Redirect::back()->with('flash_message', "Sorry, you can only edit quotations drafts that are created by to you.");
+        }
+        // grab entities for populating drop-down lists
+        $suppliers = Supplier::lists('name', 'id');
+        $statuses = Quotation::statuses();
+
+        return View::make('quotations.edit', compact('quotation','suppliers', 'statuses'))
+            ->with('reload','reload');
 	}
 
 

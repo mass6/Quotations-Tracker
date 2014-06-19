@@ -6,7 +6,7 @@
  * Time: 3:47 PM
  */
 
-class Quotation extends \BaseModel
+class Quotation extends BaseModel
 {
     /**
      * Defined attributes that may not be mass-assigned
@@ -21,7 +21,18 @@ class Quotation extends \BaseModel
      * @var array
      */
     public static $rules = [
-
+        'item_request'          =>  'required|integer|exists:item_requests,id',
+        'product_name'          =>  'required',
+        'product_code'	        =>	'max:100',
+        'supplier_id'		    => 	'required|integer|exists:suppliers,id',
+        'valid_until'           =>  'required|date',
+        'product_description'   =>  'max:1000',
+        'uom'                   =>  'required|max:250',
+        'uom_price'             =>  'required',
+        'packaging'             =>  'max:250',
+        'pack_price'            =>  'max:250',
+        'status'                =>  'required',
+        'created_by'            =>  'required|integer|exists:users,id',
 
     ];
 
@@ -52,13 +63,13 @@ class Quotation extends \BaseModel
     }
 
     /**
-     * Relation definition to Category
+     * Relation definition to Item Requests
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function category()
+    public function itemRequest()
     {
-        return $this->belongsTo('Category');
+        return $this->belongsTo('ItemRequest', 'item_request');
     }
 
     /**
