@@ -91,11 +91,10 @@
     $(document).ready(function () {
 
         var attributesObj = JSON.parse('<?php echo isset($attributes) ? json_encode($attributes) : null; ?>');
-
-        setAttributes(attributesObj);
-
+        if (attributesObj != null){
+            setAttributes(attributesObj);
+        }
     });
-
 </script>
 
 <script type="text/javascript">
@@ -131,59 +130,38 @@
     }
 
     function setAttributes(attributes){
-        console.log(attributes)
+        //console.log(attributes)
         //var attributeCount = Object.keys(attributes).length;
         var attributeCount = attributes.length;
+        console.log(attributeCount);
         //var asgnatts = <?php //echo json_encode($attvals); ?> ;
-        var attlist = <?php echo json_encode($attributesList); ?> ;
+<!--        var attlist = --><?php //echo json_encode($attributesList); ?><!-- ;-->
         //var numatts = Object.keys(attlist).length;
         //var lastatt = Object.keys(attlist)[numatts -1];
         if (attributeCount)
         {
             var div = document.getElementById('assigned-attributes');
             var bttn = document.getElementById('assignattributes');
-            var att = document.getElementById('hasattributes');
+            var hasattributes = document.getElementById('hasattributes');
 
             div.style.display = 'block';
             bttn.value = "Remove attributes";
             bttn.className = 'btn btn-warning';
-            att.value = 1;
+            hasattributes.value = 1;
 
-            for (i = 0; i < attributeCount; i++ )
+            for (var i = 1; i <= attributeCount; i++ )
             {
                 counter++;
                 var newdiv = document.createElement('div');
-                var divId = 'attribute' + serial;
+                var divId = 'attribute' + i;
 
-                    var inner = "<label for='attributes" + serial + "'>Attribute:</label>"
-                        + "<select id='" + ('attributes' + serial)  +"' class='form-control' name ='attributes[" + serial + "][0]'>";
-                <?php foreach($attributesList as $key => $val) {?>
-
-                if (attributes[i][0] == "<?php echo $key; ?>")
-                    {
-                        inner += "<option value='<?php echo $key ?>' selected='selected'><?php echo $val ?></option>";
-                    } else
-                    {
-                        inner += "<option value='<?php echo $key ?>'><?php echo $val ?></option>";
-                    }
-
-                <?php } ?>
-
-
-                    inner += "</select>";
-                var cbxRequired = "required" + serial;
-                if (attributes[i][1] === "required" )
-                    {
-                        inner += "<input type='checkbox' name='" + 'attributes[' + serial + '][1]' + "'" + 'value="required" checked="checked" class="">Required<br>';
-                    } else
-                    {
-                        inner += "<input type='checkbox' name='" + 'attributes[' + serial + '][1]' + "'" + 'value="required" class="">Required<br>';
-                    }
+                var inner = "<label for='attributes" + i + "'>Attribute:</label>"
+                        + "<input type='text' id='" + ('attributes' + i)  +"' class='form-control' name ='attributes[]' value='" + attributes[i-1] + "'>";
 
 
                     inner += "<input type='button' class='btn btn-danger btn-sm pull-right clearfix' value='delete' onclick='deleteAttribute(\"" + divId + "\")' >";
 
-                    newdiv.innerHTML = inner;
+                newdiv.innerHTML = inner;
                 document.getElementById('dynamicInput').appendChild(newdiv);
                 newdiv.className = 'form-group';
                 newdiv.id = divId;
@@ -200,16 +178,7 @@
             var newdiv = document.createElement('div');
             var divId = 'attribute' + serial;
             var inner = "<label for='attributes" + serial + "'>Attribute:</label>"
-                + "<select id='" + ('attributes' + serial)  +"' class='form-control' name ='attributes[" + serial + "][0]'>";
-
-            <?php foreach($attributesList as $key => $val) {?>
-                inner += "<option value='<?php echo $key ?>'><?php echo $val ?></option>";
-            <?php } ?>
-
-            inner += "</select>";
-            var cbxRequired = "required" + serial;
-
-            inner += "<input type='checkbox' name='" + 'attributes[' + serial + '][1]' + "'" + 'value="required" class="">Required<br>';
+                + "<input type='text' id='attributes" + serial + "' class='form-control' name ='attributes[]'>";
             inner += "<input type='button' class='btn btn-danger btn-sm pull-right clearfix' value='delete' onclick='deleteAttribute(\"" + divId + "\")' >";
             newdiv.innerHTML = inner;
             document.getElementById(divName).appendChild(newdiv);
@@ -220,35 +189,35 @@
         }
     }
 
-    function setRequired(cbx)
-    {
-        //alert("works!: " + cbx);
-        var chbx = document.getElementById(cbx);
-        if(chbx.checked == true)
-        {
-            chbx.value = "required";
-        }
-        else
-        {
-            chbx.value = "optional";
-        }
-        //alert('Required: ' + chbx.value);
-    }
+//    function setRequired(cbx)
+//    {
+//        //alert("works!: " + cbx);
+//        var chbx = document.getElementById(cbx);
+//        if(chbx.checked == true)
+//        {
+//            chbx.value = "required";
+//        }
+//        else
+//        {
+//            chbx.value = "optional";
+//        }
+//        //alert('Required: ' + chbx.value);
+//    }
 
-    function dump(obj) {
-        var out = '';
-        for (var i in obj) {
-            out += i + ": " + obj[i] + "\n";
-        }
-
-        alert(out);
-
-        // or, if you wanted to avoid alerts...
-
-        var pre = document.createElement('pre');
-        pre.innerHTML = out;
-        document.body.appendChild(pre)
-    }
+//    function dump(obj) {
+//        var out = '';
+//        for (var i in obj) {
+//            out += i + ": " + obj[i] + "\n";
+//        }
+//
+//        alert(out);
+//
+//        // or, if you wanted to avoid alerts...
+//
+//        var pre = document.createElement('pre');
+//        pre.innerHTML = out;
+//        document.body.appendChild(pre)
+//    }
 
     function deleteAttribute(id){
         var elem = document.getElementById(id);

@@ -22,7 +22,7 @@
 
 <div class="row">
     <div class="page-header">
-        <h1>{{ isset($heading) ? $heading : 'All Item Requests' }}<h1><hr/>
+        <h1>{{ isset($heading) ? $heading : 'All Quotations' }}<h1><hr/>
         <p class="text-left">{{ link_to_route('quotations.create', 'Add new quotation', null, array('class'=>'btn btn-info')) }}</p>
     </div>
     @if ($quotations->count())
@@ -47,7 +47,7 @@
             <td>{{ $quotation->itemRequest['name'] }}</td>
             <td>{{ $quotation->product_name }}</td>
             <td>{{ $quotation->supplier->name }}</td>
-            <td>{{ $quotation->valid_until }}</td>
+            <td>{{ $quotation->valid_until->format('d-m-Y') }}</td>
             <td>{{ $quotation->uom }}</td>
             <td>{{ $quotation->uom_price }}</td>
             <td>{{ link_to_route('quotations.edit', 'View / Edit', array($quotation->id), array('class' => 'btn btn-primary')) }}</td>

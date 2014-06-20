@@ -18,6 +18,6 @@
 
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('js/settings/load-quotation.js') }}"></script>
+<!--<script type="text/javascript" src="{{ URL::asset('js/settings/load-quotation.js') }}"></script>-->
 
 @stop

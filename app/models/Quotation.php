@@ -44,6 +44,13 @@ class Quotation extends BaseModel
     protected $table = 'quotations';
 
     /**
+     * Array of dates that shall be treated as Carbon objects
+     *
+     * @var array
+     */
+    protected $dates = array('valid_until');
+
+    /**
      * Text friendly attribute labels
      *
      * @var array

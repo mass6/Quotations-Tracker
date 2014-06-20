@@ -2,7 +2,8 @@
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script>
     $(function() {
-        $( "#valid_until" ).datepicker();
+        $( "#valid_until" ).datepicker({ format: "dd-mm-yyyy" });
+
     });
 </script>
 <script type="text/javascript">
@@ -20,13 +21,48 @@
         <?php } ?>
         <?php if (isset($reload)){ ?>
 
+            var attributesObj = <?php echo isset($attributes) ? $attributes : null; ?>;
+            console.log(attributesObj)
+            if ( attributesObj != null){
+               setAttributes(attributesObj);
+            }
+
         <?php } ?>
-
-
 
     });
 
+    function setAttributes(attributesObj)
+    {
+        console.log(attributesObj)
+
+        // create divs for holding attribute values
+        var attributeCount = Object.keys(attributesObj).length;
+
+        if ( attributeCount )
+        {
+            for (var i = 0; i < attributeCount; i++)
+            {
+                var newdiv = document.createElement('div');
+                var divId = 'attribute' + (i + 1);
+
+                var inner = "<label for='attributes" + (i + 1) + "' class='col-lg-2 control-label'>" + attributesObj[i][0] + ":</label><div class='col-lg-10'>"
+                    + "<input type='text' id='" + ('attributes' + (i + 1) )  +"' class='form-control' name ='attributes[" + i + "][" + attributesObj[i][0] + "]' value='" + attributesObj[i][1] + "'></div>";
+
+                newdiv.innerHTML = inner;
+                document.getElementById('product-attributes').appendChild(newdiv);
+                newdiv.className = 'form-group';
+                newdiv.id = divId;
+
+                var scratch = '[["material","metal"],["color","grey"]]'
+            }
+        }
+
+        // show attribute container div
+        document.getElementById('product-attributes').style.display = "block";
+    }
+
 </script>
+
 
     {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}
 
@@ -35,22 +71,23 @@
           <legend>Complete the fields below to add a new quotation</legend>
 
 
-
+         <div class="panel panel-primary"><br/>
           <!-- Item Request data -->
           <div class="form-group">
             {{ Form::label('item_request_name', 'Item Request', ['class'=>'col-lg-2 control-label']) }}
-            <div class="col-lg-7">
-                <pre id="item_request_name">{{ isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null }}</pre>
-                {{-- Form::text('item_request_name', isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null, ['id' => 'item_request_name', 'class' => 'form-control']) --}}
+            <div class="col-lg-6">
+                <pre  id="item_request_name">{{ isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null }} | ID: {{ isset($quotation->itemRequest['id']) ? $quotation->itemRequest['id'] : null }}
+                </pre>
+                {{-- Form::text('item_request_name', isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null, ['id' => 'item_request_name', 'class' => 'form-control col-lg-7']) --}}
               <span class="help-block">Item Request that this quotation is attached to.</span>
             </div>
 
-            <div class="col-lg-3">
+            <div class="col-lg-3 col-lg-offset-0">
                <pre id="item_request_created">{{ isset($quotation->itemRequest['created_at']) ? $quotation->itemRequest['created_at'] : null }}</pre>
                <span class="help-block">Date item request was created</span>
             </div>
           </div>
-
+        </div>
           <div class="well bs-component">
               <h4>Supplier and General Product Description</h4><br/>
           <!-- Supplier -->
@@ -65,7 +102,7 @@
 
               <!-- validity date -->
               <div class="col-lg-3">
-                  {{ Form::input('date','valid_until', null, ['id'=>'valid_until','class'=>'form-control']) }}
+                  {{ Form::input('date','valid_until', isset($valid_until) ? $valid_until : null, ['id'=>'valid_until','class'=>'form-control']) }}
                   <span class="pull-right">* Required</span>
                   <span class="help-block">Date for which this quotation is valid for.</span>
                   {{ $errors->first('valid_until', '<span class="label label-warning">:message</span>') }}

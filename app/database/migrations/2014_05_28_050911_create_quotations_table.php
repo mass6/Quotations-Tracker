@@ -24,7 +24,7 @@ class CreateQuotationsTable extends Migration {
 			$table->string('product_code')->nullable();
 			$table->integer('supplier_id');
 			$table->text('product_description')->nullable();
-			$table->text('attribute_values')->nullable();
+			$table->text('attributes')->nullable();
 			$table->string('uom');
 			$table->float('uom_price');
 			$table->string('packaging')->nullable();

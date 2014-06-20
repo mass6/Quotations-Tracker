@@ -87,6 +87,7 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+
         $item_request = ItemRequest::find($id);
         $user = User::find(Sentry::getUser()->id);
         if ($item_request->createdBy != $user && $item_request->assignedTo != $user)
@@ -96,12 +97,21 @@ class ItemRequestsController extends \BaseController {
         // grab entities for populating drop-down lists
         $customersList = Customer::lists('name', 'id');
         $categoriesList = Category::orderBy('id')->lists('name', 'id');
-        $attributesList = Attribute::lists('name', 'id');
+        //$attributesList = Attribute::lists('name', 'id');
         $usersList = User::lists('first_name', 'id');
 
-        $attributes = $this->getAssignedAttributes(json_decode($item_request->attributes));
+        if ( $item_request->attributes )
+        {
+            $attributes = json_decode($item_request->attributes);
+        }
+        else
+        {
+            $attributes = null;
+        }
 
-        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributesList', 'attributes', 'usersList'));
+       //$attributes = array('material','type','bics');
+
+        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributes', 'usersList'));
 
 	}
 
