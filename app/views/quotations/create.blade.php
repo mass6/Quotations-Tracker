@@ -40,7 +40,7 @@
         <div class="col-lg-10">
             <div class="well bs-component">
 
-                {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}
+                {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) }}
                 <?php $submit = 'Create Quotation' ?>
                 @include('quotations.partials._form')
 

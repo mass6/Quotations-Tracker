@@ -96,31 +96,31 @@ class UsersController extends \BaseController {
 	{
 
 
-		
-		$user = Sentry::findUserById($id);		
-		$input = Input::all();
+        $user = User::find($id);
+        $input = Input::all();
 
-		$validation = Validator::make($input, User::$rules);
-		if ($validation->passes())
-		{
-			$user->email = $input['email'];
-			$user->first_name = $input['first_name'];
-			$user->last_name = $input['last_name'];
+        $validation = Validator::make($input, User::$rules);
+        if ($validation->passes())
+        {
+            $user->email = $input['email'];
+            $user->first_name = $input['first_name'];
+            $user->last_name = $input['last_name'];
 
-			// check if password was updated
-			if ($input['password'] && $input['password_confirmation']) 
-			{
-				$user->password = $input['password'];
-			}
+            // check if password was updated
+            if ($input['password'] && $input['password_confirmation'])
+            {
+                $user->password = $input['password'];
+            }
 
-			$user->save();			
-    		
-    		// update group memberships
-    		if (! isset($input['group_membership'])) 
+            $user->save();
+
+            // update group memberships
+            $sentryUser = Sentry::findUserById($id);
+            if (! isset($input['group_membership']))
     		{
     			$input['group_membership'] = array();
     		}
-    		$this->updateGroupMemberships($user, $input['group_membership']);
+    		$this->updateGroupMemberships($sentryUser, $input['group_membership']);
 
 			// return to users index
 			return Redirect::route('admin.users.index')

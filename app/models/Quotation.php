@@ -6,8 +6,24 @@
  * Time: 3:47 PM
  */
 
-class Quotation extends BaseModel
+use Codesleeve\Stapler\ORM\StaplerableInterface;
+use Codesleeve\Stapler\ORM\EloquentTrait;
+
+class Quotation extends BaseModel implements StaplerableInterface
 {
+    use EloquentTrait;
+
+    public function __construct(array $attributes = array()) {
+        $this->hasAttachedFile('attachment', [
+            'styles' => [
+                'medium' => '300x300',
+                'thumb' => '100x100'
+            ]
+        ]);
+
+        parent::__construct($attributes);
+    }
+
     /**
      * Defined attributes that may not be mass-assigned
      *
@@ -25,7 +41,6 @@ class Quotation extends BaseModel
         'product_name'          =>  'required',
         'product_code'	        =>	'max:100',
         'supplier_id'		    => 	'required|integer|exists:suppliers,id',
-        'valid_until'           =>  'required|date',
         'product_description'   =>  'max:1000',
         'uom'                   =>  'required|max:250',
         'uom_price'             =>  'required',

@@ -3,7 +3,13 @@
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
+
 class User extends BaseModel implements UserInterface, RemindableInterface {
+
+    /**
+     * Attach Stapler trait
+     */
+
 
     /**
      * Defined attributes that may not be mass-assigned
@@ -11,6 +17,15 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
      * @var array
      */
 	protected $guarded = ['id'];
+
+    /**
+     * Defined attributes that may be mass-assigned
+     *
+     * @var array
+     */
+    protected $fillable = [];
+
+
 
     /**
      * Attribute validation rules

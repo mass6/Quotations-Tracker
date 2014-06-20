@@ -26,7 +26,7 @@ class ItemRequestsTableSeeder extends Seeder
             'estimated_volume'   => '50 pieces/month',
             'current_uom'   => 'each',
             'current_price'   => 2.50,
-            'attributes'    => '{"1":["1","required"],"2":["3"],"3":["4","required"]}',
+            'attributes'    => '["Color","Style"]',
             'created_by'   => 3,
             'assigned_to'   => 1
         ));
@@ -40,7 +40,7 @@ class ItemRequestsTableSeeder extends Seeder
             'estimated_volume'   => '3000 lbs month',
             'current_uom'   => 'each',
             'current_price'   => 25.75,
-            'attributes'    => '{"1":["4","required"]}',
+            'attributes'    => '["BICS","Concentration"]',
             'created_by'   => 1,
             'assigned_to'   => 1
         ));
@@ -54,7 +54,7 @@ class ItemRequestsTableSeeder extends Seeder
             'estimated_volume'   => '1500 cartons/month',
             'current_uom'   => 'carton',
             'current_price'   => 45.00,
-            'attributes'    => '{"1":["1","required"],"2":["6","required"]}',
+            'attributes'    => '["Color","Paint Type","Interior/Exterior"]',
             'created_by'   => 1,
             'assigned_to'   => 1
         ));

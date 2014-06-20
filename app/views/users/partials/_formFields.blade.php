@@ -19,6 +19,12 @@
       </div>
 
       <div class="form-group">
+      {{ Form::label('avatar', 'Avatar:') }}
+      {{ Form::file('avatar') }}
+      {{ $errors->first('avatar', '<span class="label label-warning">:message</span>') }}
+      </div>
+
+      <div class="form-group">
       {{ Form::label('password', 'Password:') }}
       {{ Form::password('password', ['class' => 'form-control']) }}
       {{ $errors->first('password', '<span class="label label-warning">:message</span>') }}

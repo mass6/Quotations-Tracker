@@ -8,7 +8,7 @@
         <div class="col-lg-10">
             <div class="well bs-component">
 
-                {{ Form::model($quotation, ['route'=>['quotations.update', $quotation->id], 'method'=>'PUT','class'=>'form-horizontal','role'=>'form']) }}
+                {{ Form::model($quotation, ['route'=>['quotations.update', $quotation->id], 'method'=>'PUT','class'=>'form-horizontal','role'=>'form', 'files'=>true]) }}
                 <?php $submit = 'Update' ?>
                 @include('quotations.partials._form')
 

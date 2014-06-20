@@ -7,7 +7,7 @@
 	<h1>Create User</h1>
 
 
-	{{ Form::open(array('route' => 'admin.users.store')) }}
+	{{ Form::open(array('route' => 'admin.users.store', 'files'=>true)) }}
 		
 		<?php $submit = 'Create User' ?>
 

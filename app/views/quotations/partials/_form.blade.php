@@ -108,6 +108,17 @@
                   {{ $errors->first('valid_until', '<span class="label label-warning">:message</span>') }}
               </div>
           </div>
+          <div class="form-group">
+              <div class="col-lg-7">
+                  {{ Form::file('attachment') }}
+              </div>
+              <div class="col-lg-3">
+                  <img src="<?= $quotation->attachment->url() ?>" >
+                  <img src="<?= $quotation->attachment->url('medium') ?>" >
+                  <img src="<?= $quotation->attachment->url('thumb') ?>" >
+
+              </div>
+          </div>
 
           <!-- productName -->
            <div class="form-group">
