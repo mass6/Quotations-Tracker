@@ -37,7 +37,6 @@
             <th>UOM</th>
             <th>Price</th>
             <th>Options</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -50,12 +49,7 @@
             <td>{{ $quotation->valid_until->format('d-m-Y') }}</td>
             <td>{{ $quotation->uom }}</td>
             <td>{{ $quotation->uom_price }}</td>
-            <td>{{ link_to_route('quotations.edit', 'View / Edit', array($quotation->id), array('class' => 'btn btn-primary')) }}</td>
-            <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('quotations.destroy', $quotation->id))) }}
-                {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-                {{ Form::close() }}
-            </td>
+            <td>{{ link_to_route('quotations.show', 'View', array($quotation->id), array('class' => 'btn btn-primary')) }}</td>
         </tr>
         @endforeach
         </tbody>

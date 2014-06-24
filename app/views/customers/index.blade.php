@@ -30,18 +30,16 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Options</th>
-            <th></th>
+            <th>Options</th>\
         </tr>
         </thead>
         <tbody>
         @foreach ($customers as $customer)
         <tr>
             <td>{{ $customer->name }}</td>
-            <td>{{ link_to_route('customers.edit', 'Edit', array($customer->id), array('class' => 'btn btn-primary')) }}</td>
             <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('customers.destroy', $customer->id))) }}
-                {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('customers.destroy', $customer->id), 'class'=>'form-inline')) }}
+                {{ link_to_route('customers.edit', 'Edit', array($customer->id), array('class' => 'btn btn-primary')) }} {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                 {{ Form::close() }}
             </td>
         </tr>

@@ -25,6 +25,21 @@
     {{ Form::textarea('description', null, ['class' => 'form-control', 'rows'=>'5', 'id' => 'description']) }}
     {{ $errors->first('description', '<span class="label label-warning">:message</span>') }}
 </div>
+@if ( isset($item_request) )
+<div class="form-group">
+    {{ Form::label('attachments', 'Attachments') }}
+        <ul class="">
+            @foreach ($item_request->attachments as $attachment)
+            <li><a href="{{ $attachment->attachment->url() }}" target="_blank" class="list-item">{{ $attachment->attachment->originalFilename() }}</a></li>
+            @endforeach
+        </ul>
+
+</div>
+@endif
+<div class="form-group">
+    {{ Form::label('attachment', 'Add Attachment') }}
+    {{ Form::file('attachment') }}
+</div>
 
 <div class="form-group">
     <input id="assignattributes" type="button" class="btn btn-success" value="Assign attributes" onClick="showAttributes();">
@@ -82,9 +97,18 @@
     {{ Form::textarea('notes', null, ['class' => 'form-control', 'rows'=>'5', 'id' => 'notes']) }}
     {{ $errors->first('notes', '<span class="label label-warning">:message</span>') }}
 </div>
-<div class="form-group">
+<div class="form-group pull-left">
     {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('item-requests.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
+    {{ Form::close() }}
 </div>
+
+@if ( isset($item_request) )
+<div class="form-group pull-right"
+        {{ Form::open(array('method' => 'DELETE', 'route' => array('item-requests.destroy', $item_request->id), 'class'=>'form-inline')) }}
+        {{ Form::submit('Delete', array('class' => 'btn btn-danger pull-right')) }}
+        {{ Form::close() }}
+</div>
+@endif
 
 
 <script type="text/javascript">
@@ -130,7 +154,7 @@
     }
 
     function setAttributes(attributes){
-        //console.log(attributes)
+        console.log(attributes)
         //var attributeCount = Object.keys(attributes).length;
         var attributeCount = attributes.length;
         console.log(attributeCount);

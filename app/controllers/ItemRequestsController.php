@@ -38,7 +38,7 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function store()
 	{
-        $input = Input::except('hasattributes');
+        $input = Input::except('attachment','hasattributes');
         if (Input::has('attributes'))
         {
             $input['attributes'] = json_encode(Input::get('attributes'));
@@ -60,6 +60,13 @@ class ItemRequestsController extends \BaseController {
 		}
 		else
 		{
+            if (Input::hasFile('attachment'))
+            {
+                $attachment = Attachment::create(array(
+                    'attachable_id'   =>  $item_request->id,
+                    'attachable_type' =>  get_class($item_request),
+                    'attachment'=>Input::file('attachment')));
+            }
 			return Redirect::route('item-requests.index')
 			->with('flash_message', 'Item Request was successfully created.')
 			->with('success', true);
@@ -75,7 +82,22 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		return "blank: " . $id;
+        $item_request = ItemRequest::find($id);
+
+        $usersList = User::lists('first_name', 'id');
+
+        if ( $item_request->attributes )
+        {
+            $attributes = json_decode($item_request->attributes);
+        }
+        else
+        {
+            $attributes = null;
+        }
+
+
+
+        return View::make('item_requests.show', compact('item_request','attributes'));
 	}
 
 
@@ -90,9 +112,9 @@ class ItemRequestsController extends \BaseController {
 
         $item_request = ItemRequest::find($id);
         $user = User::find(Sentry::getUser()->id);
-        if ($item_request->createdBy != $user && $item_request->assignedTo != $user)
+        if ($item_request->createdBy != $user )
         {
-            return Redirect::back()->with('flash_message', "Sorry, you can only edit requests that are assigned to you, or that you created.");
+            return Redirect::back()->with('flash_message', "Sorry, you may only edit Item Requests which you have created.");
         }
         // grab entities for populating drop-down lists
         $customersList = Customer::lists('name', 'id');
@@ -124,7 +146,7 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$input = Input::all();
+        $input = Input::except('attachment');
 
         //return $this->object_to_array($input['attribute']);
         if ($input['hasattributes'] && Input::has('attributes'))
@@ -145,6 +167,13 @@ class ItemRequestsController extends \BaseController {
 		}
 		else
 		{
+            if (Input::hasFile('attachment'))
+            {
+                $attachment = Attachment::create(array(
+                    'attachable_id'   =>  $id,
+                    'attachable_type' =>  get_class($item_request),
+                    'attachment'=>Input::file('attachment')));
+            }
 			return Redirect::route('item-requests.index')
 			->with('flash_message', 'Item Request was successfully updated.')
 			->with('success', true);

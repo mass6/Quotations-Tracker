@@ -39,10 +39,10 @@
             <th>Request Reference</th>
             <th>Category</th>
             <th>Status</th>
+            <th>Quotations</th>
             <th>Assigned To</th>
             <th>Created</th>
             <th>Options</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -54,14 +54,10 @@
             <td>{{ $item_request->reference }}</td>
             <td>{{ $item_request->category->name }}</td>
             <td>{{ $item_request->label($item_request->status) }}</td>
+            <td>{{ count($item_request->quotations) }}</td>
             <td>{{ $item_request->assignedTo->first_name }}</td>
             <td>{{ $item_request->created_at->format('d-m-Y') }}</td>
-            <td>{{ link_to_route('item-requests.edit', 'View / Edit', array($item_request->id), array('class' => 'btn btn-primary')) }}</td>
-            <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('item-requests.destroy', $item_request->id))) }}
-                {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-                {{ Form::close() }}
-            </td>
+            <td>{{ link_to_route('item-requests.show', 'View', array($item_request->id), array('class' => 'btn btn-primary')) }}</td>
         </tr>
         @endforeach
         </tbody>

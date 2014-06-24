@@ -97,6 +97,16 @@ class ItemRequest extends BaseModel
     }
 
     /**
+     * Relation definition to Attachment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function attachments()
+    {
+        return $this->morphMany('Attachment', 'attachable');
+    }
+
+    /**
      * Item request statuses array for populating drop down lists
      *
      * @return array

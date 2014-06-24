@@ -8,68 +8,103 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+        // if validation fails during new record creation
+        <?php if (Session::has('create_revalidate')){ ?>
+                document.getElementById('form-container').style.display = 'block';
+                document.getElementById('div_item_request_select').style.display = 'none';
+                document.getElementById('btn-add-quotation').style.display = 'none';
+                document.getElementById("selecthelper").style.visibility = 'hidden';
+                document.getElementById('item_request_select').disabled = true;
+                document.getElementById('item_request_name').innerHTML = "<?php echo Session::has('item_request')
+                ? Session::get('item_request')['name'] . ' | ID: ' . Session::get('item_request')['id'] : null ; ?>";
+                document.getElementById('item_request_created').innerHTML = "<?php echo Session::has('item_request')
+                ? Session::get('item_request')['created_at']->format('d-m-Y') : null ; ?>";
+        <?php } ?>
 
+        // if validation fails during record update
         <?php if (Session::has('revalidate')){ ?>
+                // set attributes array
+                <?php $attributes = Session::has('attributes') ? Session::get('attributes') : null; ?>
+                var attributes = <?php echo json_encode($attributes); ?>;
+                // set attribute values array
+                <?php $values = Session::has('values') ? Session::get('values') : null; ?>
+                var values = <?php echo json_encode($values); ?>;
 
-            document.getElementById('form-container').style.display = 'block';
-            document.getElementById('item_request_select').value = document.getElementById('item_request').value;
-            document.getElementById('div_item_request_select').style.display = 'none';
-            document.getElementById('btn-add-quotation').style.display = 'none';
-            document.getElementById("selecthelper").style.visibility = 'hidden';
-            document.getElementById('item_request_select').disabled = true;
+                if ( attributes != null){
+                    setAttributes(attributes, values);
+                }
+
+         // load model form for editing
+        <?php } elseif (isset($reload)){ ?>
+                var attributes = <?php echo isset($attributes) ? $attributes : null; ?>;
+                var values = <?php echo isset($values) ? $values : null; ?>;
+                if ( attributes != null){
+                    if ( values == null){
+                        var values = []
+                        for (var i = 0; i <= attributes.length; i++)
+                        {
+                            values[i] = '';
+                        }
+                    }
+                   setAttributes(attributes, values);
+                }
 
         <?php } ?>
-        <?php if (isset($reload)){ ?>
-
-            var attributesObj = <?php echo isset($attributes) ? $attributes : null; ?>;
-            console.log(attributesObj)
-            if ( attributesObj != null){
-               setAttributes(attributesObj);
-            }
-
-        <?php } ?>
-
     });
 
-    function setAttributes(attributesObj)
+    /**
+     * Takes the attributes and values arrays and creates form field
+     * elements for each attribute defined
+     *
+     * @param attributes
+     * @param values
+     */
+    function setAttributes(attributes, values = null)
     {
-        console.log(attributesObj)
-
-        // create divs for holding attribute values
-        var attributeCount = Object.keys(attributesObj).length;
-
+        var attributeCount = attributes.length;
+        // if model has defined attributes
         if ( attributeCount )
         {
+            // ensure values array is defined with at least empty strings
+            if (values == null){
+                var values = [];
+                for (var i = 0; i <= attributes.length; i++){
+                    values[i] = '';
+                }
+            }
+            // loop through each attribute and create form elements
             for (var i = 0; i < attributeCount; i++)
             {
                 var newdiv = document.createElement('div');
-                var divId = 'attribute' + (i + 1);
-
-                var inner = "<label for='attributes" + (i + 1) + "' class='col-lg-2 control-label'>" + attributesObj[i][0] + ":</label><div class='col-lg-10'>"
-                    + "<input type='text' id='" + ('attributes' + (i + 1) )  +"' class='form-control' name ='attributes[" + i + "][" + attributesObj[i][0] + "]' value='" + attributesObj[i][1] + "'></div>";
-
+                var divId = 'attribute' + i;
+                var inner = "<label for='attributes" + i + "' class='col-lg-2 control-label'>" + attributes[i] + ":</label><div class='col-lg-10'>"
+                    + "<input type='text' id='" + ('attributes' + i )  +"' class='form-control' name ='" + attributes[i] + "' value='" + values[i] +  "'>"
+                    + "</div>";
+                inner += '<input type="hidden"  value="' + attributes[i] + '" name="attributes[]" >';
                 newdiv.innerHTML = inner;
                 document.getElementById('product-attributes').appendChild(newdiv);
                 newdiv.className = 'form-group';
                 newdiv.id = divId;
-
-                var scratch = '[["material","metal"],["color","grey"]]'
             }
+            // show attribute container div
+            document.getElementById('product-attributes').style.display = "block";
         }
-
-        // show attribute container div
-        document.getElementById('product-attributes').style.display = "block";
     }
-
 </script>
 
-
-    {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form')) }}
+@if (isset($errors))
+    @if ( count($errors) )
+    <div class="errors alert alert-danger">
+        @foreach ($errors->all('<li>:message</li>') as $message)
+        {{ $message }}
+        @endforeach
+    </div>
+    @endif
+@endif
 
     {{ Form::hidden('item_request', null, ['id'=>'item_request']) }}
         <fieldset>
           <legend>Complete the fields below to add a new quotation</legend>
-
 
          <div class="panel panel-primary"><br/>
           <!-- Item Request data -->
@@ -83,7 +118,7 @@
             </div>
 
             <div class="col-lg-3 col-lg-offset-0">
-               <pre id="item_request_created">{{ isset($quotation->itemRequest['created_at']) ? $quotation->itemRequest['created_at'] : null }}</pre>
+               <pre id="item_request_created">{{ isset($quotation->itemRequest['created_at']) ? $quotation->itemRequest['created_at']->format('d-m-Y') : null }}</pre>
                <span class="help-block">Date item request was created</span>
             </div>
           </div>
@@ -108,15 +143,23 @@
                   {{ $errors->first('valid_until', '<span class="label label-warning">:message</span>') }}
               </div>
           </div>
-          <div class="form-group">
-              <div class="col-lg-7">
-                  {{ Form::file('attachment') }}
-              </div>
-              <div class="col-lg-3">
-                  <img src="<?= $quotation->attachment->url() ?>" >
-                  <img src="<?= $quotation->attachment->url('medium') ?>" >
-                  <img src="<?= $quotation->attachment->url('thumb') ?>" >
 
+          @if ( isset($quotation) )
+          <div class="form-group">
+              {{ Form::label('attachments', 'Attachments', ['class'=>'col-lg-2 control-label']) }}
+              <div class="col-lg-10">
+                  <ul class="">
+                      @foreach ($quotation->attachments as $attachment)
+                     <li><a href="{{ $attachment->attachment->url() }}" target="_blank" class="list-item">{{ $attachment->attachment->originalFilename() }}</a></li>
+                      @endforeach
+                  </ul>
+              </div>
+          </div>
+          @endif
+          <div class="form-group">
+            {{ Form::label('attachment', 'Add Attachment', ['class'=>'col-lg-2 control-label']) }}
+              <div class="col-lg-10">
+                  {{ Form::file('attachment') }}
               </div>
           </div>
 
@@ -150,10 +193,10 @@
           </div>
       </div>
 
+
             <!-- attributes -->
           <div id="product-attributes" class="well bs-component" style="display:none">
-              <h4>Product Attributes</h4><br/>
-
+              <h4>Product Attributes <span class="label label-warning">Required</span></h4><br/>
           </div>
 
         <div class="well bs-component">
@@ -234,13 +277,23 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('quotations.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
+            <div class="form-group pull-left">
+                <div class="col-lg-10 col-lg-offset-2">
+                    {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('quotations.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
+                    {{ Form::close() }}
+                </div>
             </div>
 
+            <!-- TODO : create a confirmation dialog for model deletions -->
+        @if ( isset($quotation) )
+            <div class="form-group pull-right">
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('quotations.destroy', $quotation->id), 'class'=>'form-inline')) }}
+                {{ Form::submit('Delete', array('class' => 'btn btn-danger pull-right')) }}
+                {{ Form::close() }}
+            </div>
+        @endif
 
             <!-- end form -->
-
         </fieldset>
 
     <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div>

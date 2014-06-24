@@ -17,7 +17,7 @@ class CreateQuotationsTable extends Migration {
 			$table->engine = 'InnoDB';
 
 			$table->increments('id');
-			$table->enum('status', array('drafting', 'submitted', 'valid', 'expired'));
+			$table->enum('status', array('draft', 'submitted', 'valid', 'expired'));
 			$table->integer('created_by');
 			$table->integer('item_request');
 			$table->string('product_name');
@@ -25,11 +25,12 @@ class CreateQuotationsTable extends Migration {
 			$table->integer('supplier_id');
 			$table->text('product_description')->nullable();
 			$table->text('attributes')->nullable();
+			$table->text('attribute_values')->nullable();
 			$table->string('uom');
 			$table->float('uom_price');
 			$table->string('packaging')->nullable();
 			$table->float('pack_price')->nullable();
-			$table->integer('min_qty')->nullable();
+			$table->string('min_qty')->nullable();
 			$table->text('delivery_notes')->nullable();
 			$table->date('valid_until');
 			$table->text('notes')->nullable();

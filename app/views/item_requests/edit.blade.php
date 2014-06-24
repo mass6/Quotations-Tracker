@@ -7,7 +7,7 @@
 	<h3>Edit Item Request:  {{ $item_request->name}} [{{ $item_request->id }}]</h3>
 
 
-	{{ Form::model($item_request, ['route' => array('item-requests.update', $item_request->id), 'method' =>  'PUT']) }}
+	{{ Form::model($item_request, ['route' => array('item-requests.update', $item_request->id), 'method' =>  'PUT', 'files'=>true]) }}
 
 		<?php $submit = 'Update' ?>
 

@@ -41,6 +41,7 @@ function getGroups()
     	return $groupList;
 
     }
+    return null;
 
 }
 
@@ -116,4 +117,32 @@ function getGroupMemberships($userId, $format = 'text')
     return false;
 
     
+}
+
+function jsonToArray($jsonArray)
+{
+    if(isset($jsonArray))
+    {
+        $jsonArray = json_decode($jsonArray);
+
+        // final array to be returned
+        $attributes = array();
+
+        foreach ($jsonArray as $attribute)
+        {
+            // if only 1 index, add second blank index
+            if ( ! is_object($attribute)  ) {
+                $attribute = array($attribute => "");
+            }
+
+            foreach($attribute as $key => $val)
+            {
+                $attributes[] = array($key, $val);
+            }
+
+        }
+        return json_encode($attributes);
+    }
+    else
+        return false;
 }

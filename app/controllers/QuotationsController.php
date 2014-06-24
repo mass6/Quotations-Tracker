@@ -28,8 +28,7 @@ class QuotationsController extends \BaseController {
 
         $suppliers = Supplier::lists('name', 'id');
         $statuses = Quotation::statuses();
-//        return $itemRequests; // = json_encode($itemRequests, JSON_FORCE_OBJECT);
-//        //return ItemRequest::lists('name', 'id');
+
         return View::make('quotations.create', compact('itemRequests','suppliers', 'statuses'));
 	}
 
@@ -43,14 +42,11 @@ class QuotationsController extends \BaseController {
         }
 
         $item_request = ItemRequest::find(Input::get( 'item_request' ));
-        //$attributes = json_encode($this->jsonObjectsToArray($item_request->attributes));
-        $attributes = $this->jsonObjectsToArray($item_request->attributes);
-        $user = $item_request->assignedTo->first_name;
 
-        //.....
-        //validate data
-        //and then store it in DB
-        //.....
+        // Get required attributes from Item Request. After quotation creation,
+        // the attributes will be stored in quotation model
+        $attributes = json_decode($item_request->attributes);
+        $user = $item_request->assignedTo->first_name;
 
         $response = array(
             'success' => true,
@@ -64,33 +60,127 @@ class QuotationsController extends \BaseController {
         return Response::json( $response );
     }
 
+    /**
+     * Add the dynamic form attributes to the existing
+     * model's validation rules array
+     *
+     * @param $rules
+     * @param $attributes
+     * @return null
+     */
+    protected function addAttributesToRules($rules, $attributes)
+    {
+        if ( count($attributes) )
+        {
+            $i = 0; //counter
+            foreach ($attributes as $attribute)
+            {
+                $rules[str_replace(' ','_',$attribute)] = 'required';
+                $i++;
+            }
+            return $rules;
+        }
+        return null;
+    }
 
-	/**
+    /**
+     * Looks for the attributes[] key present in the input array,
+     * and then serializes the values with the same names as
+     * the indexes in attributes[] into a new array.
+     *
+     * @param $input
+     * @return array|null
+     */
+    protected function serializeAttributesValuesToArray($input)
+    {
+        if ( array_key_exists('attributes',$input) )
+        {
+            $attributes = $input['attributes'];
+            $attributeValues = array();
+
+            foreach ($attributes as $attribute)
+            {
+                $attributeValues[] = $input[str_replace(' ','_',$attribute)];
+            }
+            return $attributeValues;
+        }
+        return null;
+    }
+
+
+    /**
 	 * Store a newly created resource in storage.
 	 *
 	 * @return Response
 	 */
 	public function store()
 	{
-//        return Input::all();
-
         $input = Input::all();
-        $input['attributes'] = json_encode($input['attributes']);
-
-        // set current logged in user as the created by id
         $input['created_by'] = Sentry::getUser()->id;
-
-        $quotation = new Quotation($input);
-        if (! $quotation->save())
+        if ( $input['valid_until'] != null)
         {
-            return Redirect::back()->withInput()->withErrors($quotation->getErrors())
-                ->with('flash_message', 'There were validation issues')
-                ->with('success', false)
-                ->with('item_request', $input['item_request'])
-                ->with('revalidate', 'revalidate');
+            $input['valid_until'] = Carbon::createFromFormat('d-m-Y', $input['valid_until']);
+        }
+
+        if ( Input::has('attributes') )
+        {
+            $attributes = Input::get('attributes');
+            // add assigned attributes to model's $rules array
+            $rules = $this->addAttributesToRules(Quotation::$rules, $attributes);
+            // serialize all the dynamic attribute fields into an array for persisting to DB
+            $attributeValues = $this->serializeAttributesValuesToArray(Input::all());
         }
         else
         {
+            $input['attributes'] = array();
+            $input['attribute_values'] = array();
+            $rules = Quotation::$rules;
+            $attributeValues = '';
+        }
+
+        $validation = Validator::make($input, $rules);
+
+        if ( $validation->fails() )
+        {
+            return Redirect::back()->withInput()->withErrors($validation)
+                ->with('flash_message', 'There were validation issues')
+                ->with('success', false)
+                ->with('attributes', $input['attributes'])
+                ->with('values', $attributeValues)
+                ->with('item_request', ItemRequest::find($input['item_request']))
+                ->with('create_revalidate', 'create_revalidate')
+                ->with('revalidate', 'revalidate');
+        }
+    else
+        {
+            // TODO : Make create and update array instead of listing columns individually
+            $quotation = Quotation::create(array(
+                'item_request'          => $input['item_request'],
+                'supplier_id'           => $input['supplier_id'],
+                'valid_until'           => $input['valid_until'],
+                'product_name'          => $input['product_name'],
+                'product_code'          => $input['product_code'],
+                'product_description'   => $input['product_description'],
+                'attributes'            => json_encode($input['attributes']),
+                'attribute_values'      => json_encode($attributeValues),
+                'uom'                   => $input['uom'],
+                'uom_price'             => $input['uom_price'],
+                'min_qty'               => $input['min_qty'],
+                'packaging'             => $input['packaging'],
+                'pack_price'            => $input['pack_price'],
+                'delivery_notes'        => $input['delivery_notes'],
+                'notes'                 => $input['notes'],
+                'status'                => $input['status'],
+                'created_by'            => $input['created_by'],
+            ));
+
+            if (Input::hasFile('attachment'))
+            {
+                $attachment = Attachment::create(array(
+                    'attachable_id'   =>  $quotation->id,
+                    'attachable_type' =>  get_class($quotation),
+                    'attachment'=>Input::file('attachment')));
+            }
             return Redirect::route('quotations.index')
                 ->with('flash_message', 'Quotation was successfully created.')
                 ->with('success', true);
@@ -99,7 +189,7 @@ class QuotationsController extends \BaseController {
 	}
 
 
-	/**
+    /**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
@@ -107,11 +197,18 @@ class QuotationsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+        $quotation = Quotation::find($id);
+        // create string variable from Carbon date object
+        $valid_until = $quotation->valid_until->format('d-m-Y');
+        // convert attributes json object to standard array object
+        $attributes = json_decode($quotation->attributes);
+        $attribute_values = json_decode($quotation->attribute_values);
+
+        return View::make('quotations.show', compact('quotation', 'statuses', 'attributes', 'attribute_values', 'valid_until'))
+            ->with('reload','reload');
 	}
 
-
-	/**
+    /**
 	 * Show the form for editing the specified resource.
 	 *
 	 * @param  int  $id
@@ -119,33 +216,25 @@ class QuotationsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-//        $item_request = ItemRequest::find(1);
-//        return $attributes = $this->jsonObjectsToArray($item_request->attributes);
-//        // delete above
-
         $quotation = Quotation::find($id);
         $user = User::find(Sentry::getUser()->id);
         if ($quotation->createdBy != $user && $quotation->status == 'draft')
         {
             return Redirect::back()->with('flash_message', "Sorry, you can only edit quotations drafts that are created by to you.");
         }
-        // reformat attributes from json to standard array
-        //return json_decode($quotation->attributes);
-//        $valid_until = new DateTime($quotation->valid_until);
-//        $quotation->valid_until = $valid_until->format('Y-m-d');
-//        $quotation->valid_until = $quotation->valid_until->format('d-m-Y');
+        // create string variable from Carbon date object
         $valid_until = $quotation->valid_until->format('d-m-Y');
-        //return $quotation;
-        $attributes = $this->jsonObjectsToArray($quotation->attributes);
+        // convert attributes json object to standard array object
+        $attributes = $quotation->attributes;
+        $values = $quotation->attribute_values;
 
-        // grab entities for populating drop-down lists
+        // grab entities for populating the form drop-down lists
         $suppliers = Supplier::lists('name', 'id');
         $statuses = Quotation::statuses();
         //$attributes = json_encode(array(array("material","metal"),array("color","grey")));
-        return View::make('quotations.edit', compact('quotation','suppliers', 'statuses', 'attributes', 'valid_until'))
+        return View::make('quotations.edit', compact('quotation','suppliers', 'statuses', 'attributes', 'values', 'valid_until'))
             ->with('reload','reload');
 	}
-
 
 	/**
 	 * Update the specified resource in storage.
@@ -155,22 +244,71 @@ class QuotationsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-
-//        $dinput = Input::get('valid_until');
-//        $date = new DateTime('2000-01-01');
-//		return $date->format('Y-m-d');
-
         $input = Input::all();
-        $input['valid_until'] = new DateTime($input['valid_until']);
-        $input['attributes'] = json_encode($input['attributes']);
+        if ( $input['valid_until'] != null)
+        {
+            $input['valid_until'] = Carbon::createFromFormat('d-m-Y', $input['valid_until']);
+        }
 
         $quotation = Quotation::find($id);
-        if (! $quotation->update($input))
+        //return Input::all();
+        if ( Input::has('attributes') )
         {
-            return Redirect::back()->withInput()->withErrors($quotation->getErrors());
+            $attributes = Input::get('attributes');
+
+            // add assigned attributes to model's $rules array
+            $rules = $this->addAttributesToRules(Quotation::$rules, $attributes);
+            // serialize all the dynamic attribute fields into an array for persisting to DB
+            $attributeValues = $this->serializeAttributesValuesToArray(Input::all());
+        } else{
+            $input['attributes'] = array();
+            $input['attribute_values'] = array();
+            $rules = Quotation::$rules;
+            $attributeValues = '';
+        }
+        unset($rules['created_by']);
+        $validation = Validator::make($input, $rules);
+
+        if ( $validation->fails() )
+        {
+            //return "failed";
+            return Redirect::back()->withInput()->withErrors($validation)
+                ->with('flash_message', 'There were validation issues')
+                ->with('success', false)
+                ->with('attributes', $input['attributes'])
+                ->with('values', $attributeValues)
+                ->with('item_request', ItemRequest::find($input['item_request']))
+                ->with('revalidate', 'revalidate');
         }
         else
         {
+            // TODO : change to defined array
+            $quotation->update(array(
+                'item_request'          => $input['item_request'],
+                'supplier_id'           => $input['supplier_id'],
+                'valid_until'           => $input['valid_until'],
+                'product_name'          => $input['product_name'],
+                'product_code'          => $input['product_code'],
+                'product_description'   => $input['product_description'],
+                'attributes'            => json_encode($input['attributes']),
+                'attribute_values'      => json_encode($attributeValues),
+                'uom'                   => $input['uom'],
+                'uom_price'             => $input['uom_price'],
+                'min_qty'               => $input['min_qty'],
+                'packaging'             => $input['packaging'],
+                'pack_price'            => $input['pack_price'],
+                'delivery_notes'        => $input['delivery_notes'],
+                'notes'                 => $input['notes'],
+                'status'                => $input['status'],
+            ));
+
+            if (Input::hasFile('attachment'))
+            {
+                $attachment = Attachment::create(array(
+                    'attachable_id'   =>  $quotation->id,
+                    'attachable_type' =>  get_class($quotation),
+                    'attachment'=>Input::file('attachment')));
+            }
             return Redirect::route('quotations.index')
                 ->with('flash_message', 'Quotation was successfully updated.')
                 ->with('success', true);
@@ -187,7 +325,10 @@ class QuotationsController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		//
+        Quotation::find($id)->delete();
+        return Redirect::route('quotations.index');
+
+        // TODO : Implement soft deletes
 	}
 
     protected function getAssignedRequestsList()
@@ -205,79 +346,6 @@ class QuotationsController extends \BaseController {
         }
         return false;
 
-    }
-
-    protected function setAttributesArray($attArray)
-    {
-        if(isset($attArray))
-        {
-            // final array to be returned
-            $attributes = array();
-
-            foreach ($attArray as $attribute)
-            {
-                //$attObj = Attribute::find($attribute[0]);
-
-                $array = array();
-                // set ID
-                $array[] = ($attribute[0]);
-
-                // set required/optional
-                if(isset($attribute[1])){
-                    $array[] = $attribute[1];
-                } else {
-                    $array[] = "optional";
-                }
-
-                // set Name
-                $array[] = $attObj->name;
-
-                // set type
-                $array[] = $attObj->type;
-
-                // set values
-                if ($attObj->type == "select")
-                {
-                    $array[] = json_decode($attObj->values);
-                } else
-                    $array[] = null;
-
-                // add array object as index in master array
-                $attributes[$counter] = $array;
-                $counter++;
-            }
-            return $attributes;
-        }
-        else
-            return false;
-    }
-
-    protected function jsonObjectsToArray($jsonArray)
-    {
-        if(isset($jsonArray))
-        {
-            $jsonArray = json_decode($jsonArray);
-
-            // final array to be returned
-            $attributes = array();
-
-            foreach ($jsonArray as $attribute)
-            {
-                // if only 1 index, add second blank index
-                if ( ! is_object($attribute)  ) {
-                    $attribute = array($attribute => "");
-                }
-
-                foreach($attribute as $key => $val)
-                {
-                    $attributes[] = array($key, $val);
-                }
-
-            }
-            return json_encode($attributes);
-        }
-        else
-            return false;
     }
 
 }

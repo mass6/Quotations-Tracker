@@ -6,10 +6,6 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends BaseModel implements UserInterface, RemindableInterface {
 
-    /**
-     * Attach Stapler trait
-     */
-
 
     /**
      * Defined attributes that may not be mass-assigned

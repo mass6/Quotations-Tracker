@@ -32,7 +32,6 @@
             <th>Name</th>
             <th>Description</th>
             <th>Options</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -40,10 +39,9 @@
         <tr>
             <td>{{ $category->name }}</td>
             <td>{{ $category->description }}</td>
-            <td>{{ link_to_route('categories.edit', 'Edit', array($category->id), array('class' => 'btn btn-primary')) }}</td>
             <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('categories.destroy', $category->id))) }}
-                {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('categories.destroy', $category->id), 'class'=>'form-inline')) }}
+                {{ link_to_route('categories.edit', 'Edit', array($category->id), array('class' => 'btn btn-primary')) }} {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                 {{ Form::close() }}
             </td>
         </tr>

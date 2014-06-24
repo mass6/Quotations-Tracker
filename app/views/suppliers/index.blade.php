@@ -31,17 +31,15 @@
         <tr>
             <th>Name</th>
             <th>Options</th>
-            <th></th>
         </tr>
         </thead>
         <tbody>
         @foreach ($suppliers as $supplier)
         <tr>
             <td>{{ $supplier->name }}</td>
-            <td>{{ link_to_route('suppliers.edit', 'Edit', array($supplier->id), array('class' => 'btn btn-primary')) }}</td>
             <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('suppliers.destroy', $supplier->id))) }}
-                {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('suppliers.destroy', $supplier->id), 'class'=>'form-inline')) }}
+                {{ link_to_route('suppliers.edit', 'Edit', array($supplier->id), array('class' => 'btn btn-primary')) }} {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                 {{ Form::close() }}
             </td>
         </tr>

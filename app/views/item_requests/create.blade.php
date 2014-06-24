@@ -7,7 +7,7 @@
     <h1>Create Item Request</h1>
 
 
-    {{ Form::open(array('route' => 'item-requests.store')) }}
+    {{ Form::open(array('route' => 'item-requests.store', 'files'=>true)) }}
 
     <?php $submit = 'Create Request' ?>
 
