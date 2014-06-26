@@ -12,7 +12,7 @@
 */
 // Test routes
 Route::get('/test', function(){
-    //return Quotation::find(2)->itemRequests;
+    return Quotation::find(2)->itemRequests;
 });
 
 // Public routes
