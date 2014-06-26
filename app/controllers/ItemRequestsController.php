@@ -193,73 +193,7 @@ class ItemRequestsController extends \BaseController {
 		return Redirect::route('item-requests.index');
 	}
 
-    public function object_to_array($data)
-    {
-        if(is_array($data) || is_object($data))
-        {
-            $result = array();
 
-            foreach($data as $key => $value) {
-                $result[$key] = $this->object_to_array($value);
-            }
-
-            return $result;
-        }
-
-        return $data;
-    }
-
-    /**
-     * Checks the assigned attributes as stored in teh database against the current
-     * active set of attributes. Returns an array containing only the assigned attributes
-     * which are still active.
-     *
-     * @param $attributeArray
-     * @return array
-     */
-    protected function getAssignedAttributes($attributeArray)
-    {
-        $availableAttributes = Attribute::all(); // current attributes defined in system
-
-        // initialize variables for storing teh attribute arrays
-        $attributeIds = array();  // array of attribute id's
-        $assignedAttributes = array(); // resulting array of current attributes to be assigned
-
-        // loop through each attribute and store id in array
-        foreach ($availableAttributes as $attribute)
-        {
-            $attributeIds[] = $attribute['id'];
-        }
-
-        if (isset($attributeArray))
-        {
-            $i = 0; // counter for serializing the resulting assigned array
-            foreach ($attributeArray as $attribute)
-            {
-                // Does the current stored attribute still exist in the current
-                // list of available attributes?
-                if (in_array($attribute[0],$attributeIds))
-                {
-                    // assign attribute id to index 0
-                    $assignedAttributes[$i][0] = (int) $attribute[0];
-
-                    // check if attribute is required and assign result to index #1
-                    if (in_array("required",$attribute))
-                    {
-                        $assignedAttributes[$i][1] = "required";
-                    }
-                    else
-                    {
-                        $assignedAttributes[$i][1] = "optional";
-                    }
-                    $i++;
-                }
-            }
-        }
-
-        return $assignedAttributes;
-
-    }
 
 
 }

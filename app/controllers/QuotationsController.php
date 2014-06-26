@@ -15,13 +15,35 @@ class QuotationsController extends \BaseController {
 
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource
      *
-     * @return \Illuminate\View\View
+     * @param null $item_request_id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function create()
+    public function create($item_request_id = null)
 	{
-        if (! $itemRequests = $this->getAssignedRequestsList())
+        if ($item_request_id)
+        {
+            //return 'create Quotation for I.R. No. : ' . $item_request;
+            $item_request = ItemRequest::find($item_request_id);
+
+            // Get required attributes from Item Request. After quotation creation,
+            // the attributes will be stored in quotation model
+            $attributes = json_decode($item_request->attributes);
+            $suppliers = Supplier::lists('name', 'id');
+            $statuses = Quotation::statuses();
+            //$user = $item_request->assignedTo->first_name;
+            return View::make('quotations.create', compact('item_request', 'attributes', 'suppliers', 'statuses'));
+//            $response = array(
+//                'success' => true,
+//                'item_request' => $item_request->id,
+//                'item_request_name' => $item_request->name,
+//                'item_request_created' => $item_request->created_at->format('d-m-Y'),
+//                'attributes' => $attributes,
+//                'user' => $user,
+//            );
+        }
+        if (! $itemRequests = ItemRequest::getAssignedRequestsList())
         {
             return Redirect::back()->with('flash_message', 'No item requests exist to attach a quotation to. Please create an item request first.');
         }
@@ -61,54 +83,6 @@ class QuotationsController extends \BaseController {
     }
 
     /**
-     * Add the dynamic form attributes to the existing
-     * model's validation rules array
-     *
-     * @param $rules
-     * @param $attributes
-     * @return null
-     */
-    protected function addAttributesToRules($rules, $attributes)
-    {
-        if ( count($attributes) )
-        {
-            $i = 0; //counter
-            foreach ($attributes as $attribute)
-            {
-                $rules[str_replace(' ','_',$attribute)] = 'required';
-                $i++;
-            }
-            return $rules;
-        }
-        return null;
-    }
-
-    /**
-     * Looks for the attributes[] key present in the input array,
-     * and then serializes the values with the same names as
-     * the indexes in attributes[] into a new array.
-     *
-     * @param $input
-     * @return array|null
-     */
-    protected function serializeAttributesValuesToArray($input)
-    {
-        if ( array_key_exists('attributes',$input) )
-        {
-            $attributes = $input['attributes'];
-            $attributeValues = array();
-
-            foreach ($attributes as $attribute)
-            {
-                $attributeValues[] = $input[str_replace(' ','_',$attribute)];
-            }
-            return $attributeValues;
-        }
-        return null;
-    }
-
-
-    /**
 	 * Store a newly created resource in storage.
 	 *
 	 * @return Response
@@ -135,8 +109,10 @@ class QuotationsController extends \BaseController {
             $input['attributes'] = array();
             $input['attribute_values'] = array();
             $rules = Quotation::$rules;
-            $attributeValues = '';
+            $attributeValues = array();
         }
+
+
 
         $validation = Validator::make($input, $rules);
 
@@ -149,9 +125,10 @@ class QuotationsController extends \BaseController {
                 ->with('values', $attributeValues)
                 ->with('item_request', ItemRequest::find($input['item_request']))
                 ->with('create_revalidate', 'create_revalidate')
+                ->with('create', 'create')
                 ->with('revalidate', 'revalidate');
         }
-    else
+        else
         {
             // TODO : Make create and update array instead of listing columns individually
             $quotation = Quotation::create(array(
@@ -185,9 +162,7 @@ class QuotationsController extends \BaseController {
                 ->with('flash_message', 'Quotation was successfully created.')
                 ->with('success', true);
         }
-
-	}
-
+    }
 
     /**
 	 * Display the specified resource.
@@ -207,6 +182,7 @@ class QuotationsController extends \BaseController {
         return View::make('quotations.show', compact('quotation', 'statuses', 'attributes', 'attribute_values', 'valid_until'))
             ->with('reload','reload');
 	}
+
 
     /**
 	 * Show the form for editing the specified resource.
@@ -236,7 +212,8 @@ class QuotationsController extends \BaseController {
             ->with('reload','reload');
 	}
 
-	/**
+
+    /**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
@@ -264,11 +241,11 @@ class QuotationsController extends \BaseController {
             $input['attributes'] = array();
             $input['attribute_values'] = array();
             $rules = Quotation::$rules;
-            $attributeValues = '';
+            $attributeValues = array();
         }
         unset($rules['created_by']);
-        $validation = Validator::make($input, $rules);
 
+        $validation = Validator::make($input, $rules);
         if ( $validation->fails() )
         {
             //return "failed";
@@ -280,8 +257,7 @@ class QuotationsController extends \BaseController {
                 ->with('item_request', ItemRequest::find($input['item_request']))
                 ->with('revalidate', 'revalidate');
         }
-        else
-        {
+        else{
             // TODO : change to defined array
             $quotation->update(array(
                 'item_request'          => $input['item_request'],
@@ -313,11 +289,9 @@ class QuotationsController extends \BaseController {
                 ->with('flash_message', 'Quotation was successfully updated.')
                 ->with('success', true);
         }
+    }
 
-	}
-
-
-	/**
+    /**
 	 * Remove the specified resource from storage.
 	 *
 	 * @param  int  $id
@@ -331,21 +305,53 @@ class QuotationsController extends \BaseController {
         // TODO : Implement soft deletes
 	}
 
-    protected function getAssignedRequestsList()
+    /**
+     * Add the dynamic form attributes to the existing
+     * model's validation rules array
+     *
+     * @param $rules
+     * @param $attributes
+     * @return null
+     */
+    protected function addAttributesToRules($rules, $attributes)
     {
-        $values = ItemRequest::where('status', 'assigned')->select('name', 'id')->get();
-
-        if($values)
+        if ( count($attributes) )
         {
-            $requestslist = array();
-            foreach ($values as $val)
+            $i = 0; //counter
+            foreach ($attributes as $attribute)
             {
-                $requestslist[$val['id']] = $val['name'];
+                $rules[str_replace(' ','_',$attribute)] = 'required';
+                $i++;
             }
-            return $requestslist;
+            return $rules;
         }
-        return false;
-
+        return null;
     }
+
+
+    /**
+     * Looks for the attributes[] key present in the input array,
+     * and then serializes the values with the same names as
+     * the indexes in attributes[] into a new array.
+     *
+     * @param $input
+     * @return array|null
+     */
+    protected function serializeAttributesValuesToArray($input)
+    {
+        if ( array_key_exists('attributes',$input) )
+        {
+            $attributes = $input['attributes'];
+            $attributeValues = array();
+
+            foreach ($attributes as $attribute)
+            {
+                $attributeValues[] = $input[str_replace(' ','_',$attribute)];
+            }
+            return $attributeValues;
+        }
+        return null;
+    }
+
 
 }

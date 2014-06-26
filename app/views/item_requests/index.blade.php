@@ -12,7 +12,13 @@
 <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js" language="javascript" type="text/javascript"></script>
 <script class="init" type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').dataTable();
+        $('#datatable').dataTable({
+            "columnDefs": [ {
+                "targets": 9,
+                "width": "20%",
+                "orderable" : false
+            } ]
+        });
     });
 </script>
 
@@ -33,32 +39,40 @@
     <table id="datatable" class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>No.</th>
             <th>Customer</th>
             <th>Product Name</th>
             <th>Request Reference</th>
-            <th>Category</th>
             <th>Status</th>
-            <th>Quotations</th>
-            <th>Assigned To</th>
+            <th>Category</th>
+            <th># Quotes</th>
+            <th>Assigned</th>
             <th>Created</th>
-            <th>Options</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
+        <?php $counter = 1; ?>
         @foreach ($item_requests as $item_request)
         <tr>
             <td><em>{{ $item_request->id }}</em></td>
             <td>{{ $item_request->customer->name }}</td>
             <td>{{ $item_request->name }}</td>
             <td>{{ $item_request->reference }}</td>
-            <td>{{ $item_request->category->name }}</td>
             <td>{{ $item_request->label($item_request->status) }}</td>
+            <td>{{ $item_request->category->name }}</td>
             <td>{{ count($item_request->quotations) }}</td>
             <td>{{ $item_request->assignedTo->first_name }}</td>
             <td>{{ $item_request->created_at->format('d-m-Y') }}</td>
-            <td>{{ link_to_route('item-requests.show', 'View', array($item_request->id), array('class' => 'btn btn-primary')) }}</td>
+            <td>{{-- link_to_route('item-requests.show', 'View', array($item_request->id), array('class' => 'btn btn-primary')) --}}
+                {{ Form::open(array('class' => 'form-inline') ) }}
+                {{ Form::select('actions', ['0'=>'[Select]','view'=>'View/Edit', 'new-quotation'=>'New Quote','assign-quotation'=>'Attach Quotation'], null, ['class'=>'form-control','id'=>'select-action' . $counter]) }}
+                <button type="button" id="btn-inline" class="btn btn-sm btn-primary form-control" onclick="btnClicked('{{ "select-action" . $counter }}',{{ $item_request->id }})">Go</button>
+                {{-- Form::button( 'Go', array('id' => 'btn-add-quotation','class' => 'btn btn-sm btn-primary form-control', 'id'=>'btn-inline', 'onclick'=>'btnClicked($item_request->id)') ) --}}
+                {{ Form::close() }}
+                {{-- link_to_route('quotations.createFromItemRequest', '+ Quote', array($item_request->id), array('class' => 'btn btn-info')) --}}</td>
         </tr>
+        <?php $counter++; ?>
         @endforeach
         </tbody>
     </table>
@@ -66,4 +80,25 @@
     There are no Item requests
     @endif
 </div>
+
+<script type="text/javascript">
+    function btnClicked(elname, id)
+    {
+        if ( document.getElementById(elname).value == "view" )
+        {
+            window.location="{{ url('/item-requests/') }}" + "/" + id
+        }
+        else if ( document.getElementById(elname).value == "new-quotation" )
+        {
+            window.location="{{ url('/quotations/create') }}" + "/" + id
+        }else if ( document.getElementById(elname).value == "assign-quotation" )
+        {
+            alert('This functionality is to be added...')
+//            window.location="{{ url('/quotations/create') }}" + "/" + id
+        }
+    }
+</script>
+
+
+
 @stop

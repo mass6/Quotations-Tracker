@@ -12,7 +12,14 @@
 <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js" language="javascript" type="text/javascript"></script>
 <script class="init" type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').dataTable();
+        $(document).ready(function() {
+            $('#datatable').dataTable({
+                "columnDefs": [ {
+                    "targets": 7,
+                    "orderable" : false
+                } ]
+            });
+        });
     });
 </script>
 

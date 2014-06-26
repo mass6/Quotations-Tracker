@@ -8,6 +8,21 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+                var line = ''
+        <?php if ( isset($item_request) && ! Session::has('create') ) { ?>
+                document.getElementById('item_request').value = "<?php echo $item_request->id; ?>"
+                document.getElementById('form-container').style.display = 'block';
+                document.getElementById('div_item_request_select').style.display = 'none';
+                document.getElementById('item_request_name').innerHTML = "<?php echo $item_request->name; ?>";
+                document.getElementById('item_request_created').innerHTML = "<?php echo $item_request->created_at->format('d-m-Y'); ?>";
+                // set attributes array
+                <?php $attributes = isset($attributes) ? $attributes : null; ?>
+                var attributes = <?php echo json_encode($attributes); ?>;
+                console.log(attributes)
+                if ( attributes != null){
+                    setAttributes(attributes);
+                }
+        <?php } ?>
         // if validation fails during new record creation
         <?php if (Session::has('create_revalidate')){ ?>
                 document.getElementById('form-container').style.display = 'block';
@@ -20,15 +35,14 @@
                 document.getElementById('item_request_created').innerHTML = "<?php echo Session::has('item_request')
                 ? Session::get('item_request')['created_at']->format('d-m-Y') : null ; ?>";
         <?php } ?>
-
         // if validation fails during record update
         <?php if (Session::has('revalidate')){ ?>
                 // set attributes array
-                <?php $attributes = Session::has('attributes') ? Session::get('attributes') : null; ?>
-                var attributes = <?php echo json_encode($attributes); ?>;
+                <?php $attributes = Session::has('attributes') ? json_encode(Session::get('attributes')) : null; ?>
+                var attributes = <?php echo $attributes; ?>;
                 // set attribute values array
-                <?php $values = Session::has('values') ? Session::get('values') : null; ?>
-                var values = <?php echo json_encode($values); ?>;
+                <?php $values = Session::has('values') ? json_encode(Session::get('values')) : null; ?>
+                var values = <?php echo $values; ?>;
 
                 if ( attributes != null){
                     setAttributes(attributes, values);

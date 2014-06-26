@@ -27,6 +27,7 @@ class ItemRequest extends BaseModel
         'current_price'     =>  'max:45',
         'created_by'        =>  'required|integer|exists:users,id',
         'assigned_to'       =>  'required|integer|exists:users,id',
+        'date_assigned'     =>  'date'
 
 	];
 
@@ -36,6 +37,13 @@ class ItemRequest extends BaseModel
 	 * @var string
 	 */
 	protected $table = 'item_requests';
+
+    /**
+     * Array of dates that shall be treated as Carbon objects
+     *
+     * @var array
+     */
+    protected $dates = array('date_assigned');
 
     /**
      * Text friendly attribute labels
@@ -73,7 +81,7 @@ class ItemRequest extends BaseModel
      */
     public function quotations()
     {
-        return $this->hasMany('Quotation', 'item_request');
+        return $this->belongsToMany('Quotation');
     }
 
     /**
@@ -119,6 +127,24 @@ class ItemRequest extends BaseModel
             'completed' =>  'Completed',
             'cancelled' =>  'Cancelled'
         );
+    }
+
+
+    public static function getAssignedRequestsList()
+    {
+        $values = static::where('status', 'assigned')->select('name', 'id')->get();
+
+        if($values)
+        {
+            $requestslist = array();
+            foreach ($values as $val)
+            {
+                $requestslist[$val['id']] = $val['name'];
+            }
+            return $requestslist;
+        }
+        return false;
+
     }
 
 

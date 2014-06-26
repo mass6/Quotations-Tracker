@@ -17,13 +17,18 @@
             {{ Form::label( 'item_request_select', 'Item Request:', ['class' => 'control-label'] ) }}
         </div>
 
+        @if (! isset($itemRequests) )
+            <?php $itemRequests = array(); ?>
+        @endif
+        <!-- TODO : Clean this solution up. -->
+
         <div class="col-lg-7">
             {{ Form::select( 'item_request_select', $itemRequests,null, array(
             'id' => 'item_request_select',
             'required' => true,
             'class' => 'form-control'
             ) ) }}
-            <span id="selecthelper" class="help-block">Select an item request to attach the new quotation to</span>
+            <span id="selecthelper" class="help-block">Select the Item Request to attached this quotation to</span>
         </div>
 
         <div class="col-lg-3">
@@ -32,6 +37,7 @@
             'class' => 'btn btn-primary'
             ) ) }}
         </div>
+
     </div>
     </fieldset>
     {{ Form::close() }}
@@ -42,7 +48,7 @@
 
                 {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) }}
                 <?php $submit = 'Create Quotation' ?>
-                @include('quotations.partials._form')
+                @include('quotations.partials._formFields')
 
             </div>
         </div>

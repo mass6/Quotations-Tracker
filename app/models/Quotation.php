@@ -35,7 +35,6 @@ class Quotation extends BaseModel
         'pack_price'            =>  'max:250',
         'status'                =>  'required',
         'created_by'            =>  'required|integer|exists:users,id',
-
     ];
     // TODO : consider deleting created_by validation rule and placing in store() method.
 
@@ -62,6 +61,13 @@ class Quotation extends BaseModel
 
     );
 
+    public static function  setRules()
+    {
+        static::$rules = static::$validationRules;
+    }
+
+
+
     /**
      * Relation definition to Supplier
      *
@@ -77,9 +83,9 @@ class Quotation extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function itemRequest()
+    public function itemRequests()
     {
-        return $this->belongsTo('ItemRequest', 'item_request');
+        return $this->belongsToMany('ItemRequest');
     }
 
     /**
@@ -111,8 +117,8 @@ class Quotation extends BaseModel
     {
         return array(
             'draft'     =>  'Draft',
-            'completed' =>  'Completed',
-            'cancelled' =>  'Cancelled',
+            'submitted' =>  'Submitted',
+            'valid'     =>  'Valid',
             'expired'   =>  'Expired'
         );
     }

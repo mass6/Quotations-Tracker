@@ -10,9 +10,14 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+// Test routes
+Route::get('/test', function(){
+    return Quotation::find(2)->itemRequests;
+});
 
 // Public routes
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 // Authentication routes
 Route::get('login', 'SessionsController@create');
@@ -45,13 +50,14 @@ Route::group(array('before' => 'auth'), function()
     Route::resource('{userId}/item-requests', 'UserItemRequestsController');
 
     // Quotations
+    Route::get('quotations/create/{item_request}', ['as' => 'quotations.createFromItemRequest', 'uses' => 'QuotationsController@create']);
     Route::resource('quotations', 'QuotationsController');
     Route::post( '/quotations/select', array(
         'as' => 'quotations.select',
         'uses' => 'QuotationsController@select'
     ));
 
-    Route::get('/test', 'QuotationsController@test');
+
 
 
     //Settings: show form to create settings

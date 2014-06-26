@@ -181,8 +181,6 @@
 
                 var inner = "<label for='attributes" + i + "'>Attribute:</label>"
                         + "<input type='text' id='" + ('attributes' + i)  +"' class='form-control' name ='attributes[]' value='" + attributes[i-1] + "'>";
-
-
                     inner += "<input type='button' class='btn btn-danger btn-sm pull-right clearfix' value='delete' onclick='deleteAttribute(\"" + divId + "\")' >";
 
                 newdiv.innerHTML = inner;
