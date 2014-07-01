@@ -126,4 +126,9 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
         $this->hasMany('ItemRequest');
     }
 
+    public function comments()
+    {
+        return $this->hasMany('Comment');
+    }
+
 }

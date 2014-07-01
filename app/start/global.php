@@ -79,3 +79,7 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+App::bind('Acme\Repositories\MyInterface', 'Acme\Repositories\DbQuote');
+Event::subscribe('ItemRequestsController');
+Event::subscribe('QuotationsController');

@@ -2,6 +2,17 @@
 
 class ItemRequestsController extends \BaseController {
 
+
+    public function subscribe($events)
+    {
+        $events->listen('quotation.update', 'ItemRequestsController@logUpdate');
+    }
+
+    public function logUpdate($event)
+    {
+        Log::info('Quotation No.' . $event->id . ' has been updated. Note from Item Request Controller');
+    }
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -192,6 +203,14 @@ class ItemRequestsController extends \BaseController {
 		ItemRequest::find($id)->delete();
 		return Redirect::route('item-requests.index');
 	}
+
+    public function attachQuotation($id, $quotation)
+    {
+        Quotation::find($quotation)->itemRequests()->attach($id);
+        return Redirect::back()
+            ->with('flash_message', 'Quotation successfully linked to Item Request.')
+            ->with('success', true);
+    }
 
 
 

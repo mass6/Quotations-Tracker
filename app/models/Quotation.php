@@ -23,7 +23,7 @@ class Quotation extends BaseModel
      * @var array
      */
     public static $rules = [
-        'item_request'          =>  'required|integer|exists:item_requests,id',
+        'item_request'          =>  'integer|exists:item_requests,id',
         'product_name'          =>  'required',
         'product_code'	        =>	'max:100',
         'supplier_id'		    => 	'required|integer|exists:suppliers,id',
@@ -85,7 +85,7 @@ class Quotation extends BaseModel
      */
     public function itemRequests()
     {
-        return $this->belongsToMany('ItemRequest');
+        return $this->belongsToMany('ItemRequest')->withTimestamps();
     }
 
     /**
@@ -106,6 +106,16 @@ class Quotation extends BaseModel
     public function attachments()
     {
         return $this->morphMany('Attachment', 'attachable');
+    }
+
+    /**
+     * Relation definition to Comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function comments()
+    {
+        return $this->morphMany('Comment', 'commentable');
     }
 
     /**

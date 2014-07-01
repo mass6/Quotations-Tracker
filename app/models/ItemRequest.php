@@ -81,7 +81,17 @@ class ItemRequest extends BaseModel
      */
     public function quotations()
     {
-        return $this->belongsToMany('Quotation');
+        return $this->belongsToMany('Quotation')->withTimestamps();
+    }
+
+    /**
+     * Relation quotation models with status of 'valid'
+     *
+     * @return mixed
+     */
+    public function validQuotations()
+    {
+        return $this->quotations()->where('status', 'valid');
     }
 
     /**
@@ -112,6 +122,16 @@ class ItemRequest extends BaseModel
     public function attachments()
     {
         return $this->morphMany('Attachment', 'attachable');
+    }
+
+    /**
+     * Relation definition to Comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function comments()
+    {
+        return $this->morphMany('Comment', 'commentable');
     }
 
     /**

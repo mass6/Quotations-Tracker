@@ -1,7 +1,25 @@
 <?php
 
+use Acme\Repositories\MyInterface;
+
 class QuotationsController extends \BaseController {
 
+    protected $quotation;
+
+    public function __construct(MyInterface $quotation)
+    {
+        $this->quotation = $quotation;
+    }
+
+    public function subscribe($events)
+    {
+        $events->listen('quotation.update', 'QuotationsController@logUpdate', 10);
+    }
+
+    public function logUpdate($event)
+    {
+        Log::info('Quotation No.' . $event->id . ' has been updated. Note from Quotations Controller');
+    }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -9,7 +27,8 @@ class QuotationsController extends \BaseController {
 	 */
 	public function index()
 	{
-        $quotations = Quotation::all();
+        //$quotations = Quotation::all();
+        $quotations = $this->quotation->getAll();
 		return View::make('quotations.index', compact('quotations'));
 	}
 
@@ -22,6 +41,8 @@ class QuotationsController extends \BaseController {
      */
     public function create($item_request_id = null)
 	{
+        $suppliers = Supplier::lists('name', 'id');
+        $statuses = Quotation::statuses();
         if ($item_request_id)
         {
             //return 'create Quotation for I.R. No. : ' . $item_request;
@@ -30,8 +51,6 @@ class QuotationsController extends \BaseController {
             // Get required attributes from Item Request. After quotation creation,
             // the attributes will be stored in quotation model
             $attributes = json_decode($item_request->attributes);
-            $suppliers = Supplier::lists('name', 'id');
-            $statuses = Quotation::statuses();
             //$user = $item_request->assignedTo->first_name;
             return View::make('quotations.create', compact('item_request', 'attributes', 'suppliers', 'statuses'));
 //            $response = array(
@@ -43,16 +62,19 @@ class QuotationsController extends \BaseController {
 //                'user' => $user,
 //            );
         }
-        if (! $itemRequests = ItemRequest::getAssignedRequestsList())
+        else
         {
-            return Redirect::back()->with('flash_message', 'No item requests exist to attach a quotation to. Please create an item request first.');
+            return View::make('quotations.create', compact('suppliers', 'statuses'));
         }
+//        if (! $itemRequests = ItemRequest::getAssignedRequestsList())
+//        {
+//            return Redirect::back()->with('flash_message', 'No item requests exist to attach a quotation to. Please create an item request first.');
+//        }
 
-        $suppliers = Supplier::lists('name', 'id');
-        $statuses = Quotation::statuses();
+//        $suppliers = Supplier::lists('name', 'id');
+//        $statuses = Quotation::statuses();
 
-        return View::make('quotations.create', compact('itemRequests','suppliers', 'statuses'));
-	}
+    }
 
     public function select() {
 
@@ -91,7 +113,7 @@ class QuotationsController extends \BaseController {
 	{
         $input = Input::all();
         $input['created_by'] = Sentry::getUser()->id;
-        if ( $input['valid_until'] != null)
+        if ( Input::has('valid_until') )
         {
             $input['valid_until'] = Carbon::createFromFormat('d-m-Y', $input['valid_until']);
         }
@@ -112,10 +134,7 @@ class QuotationsController extends \BaseController {
             $attributeValues = array();
         }
 
-
-
         $validation = Validator::make($input, $rules);
-
         if ( $validation->fails() )
         {
             return Redirect::back()->withInput()->withErrors($validation)
@@ -150,6 +169,11 @@ class QuotationsController extends \BaseController {
                 'status'                => $input['status'],
                 'created_by'            => $input['created_by'],
             ));
+
+            if ( Input::has('item_request'))
+            {
+                ItemRequest::find($input['item_request'])->quotations()->save($quotation);
+            }
 
             if (Input::hasFile('attachment'))
             {
@@ -198,18 +222,13 @@ class QuotationsController extends \BaseController {
         {
             return Redirect::back()->with('flash_message', "Sorry, you can only edit quotations drafts that are created by to you.");
         }
-        // create string variable from Carbon date object
-        $valid_until = $quotation->valid_until->format('d-m-Y');
-        // convert attributes json object to standard array object
-        $attributes = $quotation->attributes;
-        $values = $quotation->attribute_values;
 
-        // grab entities for populating the form drop-down lists
-        $suppliers = Supplier::lists('name', 'id');
-        $statuses = Quotation::statuses();
-        //$attributes = json_encode(array(array("material","metal"),array("color","grey")));
-        return View::make('quotations.edit', compact('quotation','suppliers', 'statuses', 'attributes', 'values', 'valid_until'))
-            ->with('reload','reload');
+        // convert attributes json object to standard array object
+        $attributes = json_decode($quotation->attributes);
+        $values = json_decode($quotation->attribute_values);
+        $item_requests = $quotation->itemRequests();
+
+        return View::make('quotations.edit', compact('quotation','item_requests','attributes','values'));
 	}
 
 
@@ -277,7 +296,7 @@ class QuotationsController extends \BaseController {
                 'notes'                 => $input['notes'],
                 'status'                => $input['status'],
             ));
-
+            Event::fire('quotation.update', ['quotation' => $quotation]); // trigger test event
             if (Input::hasFile('attachment'))
             {
                 $attachment = Attachment::create(array(
@@ -304,6 +323,36 @@ class QuotationsController extends \BaseController {
 
         // TODO : Implement soft deletes
 	}
+
+    public function attachRequest($id)
+    {
+        if ( Input::has('item-request-attach'))
+        {
+            $item_request = ItemRequest::find(Input::get('item-request-attach'));
+            if ( ! $item_request->quotations->contains($id))
+            {
+                $item_request->quotations()->attach($id);
+                return Redirect::back()
+                    ->with('flash_message', 'Item Request successfully linked to Item Request.')
+                    ->with('success', true);
+            }
+            else
+            {
+                return Redirect::back()
+                    ->with('flash_message', 'Quotation is already linked to Item Request.')
+                    ->with('success', false);
+            }
+            // TODO : Filter dropdown list to only include item requests that are not currently linked to quotation
+        }
+    }
+
+    public function detachRequest($id, $item_request)
+    {
+        ItemRequest::find($item_request)->quotations()->detach($id);
+        return Redirect::back()
+            ->with('flash_message', 'Unlinked Item Request #' . $item_request . ' from Quotation')
+            ->with('success', true);
+    }
 
     /**
      * Add the dynamic form attributes to the existing

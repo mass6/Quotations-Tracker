@@ -1,18 +1,38 @@
-@extends('layouts.default')
+@extends('layouts.main')
 
 @section('links')
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('js/datatables/css/jquery.dataTables.css') }}">
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css">
 <style>
     table form { margin-bottom: 0; }
     form ul { margin-left: 0; list-style: none; }
     .error { color: red; font-style: italic; }
 </style>
-<script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js" language="javascript" type="text/javascript"></script>
+
 <script class="init" type="text/javascript">
     $(document).ready(function() {
         $('#datatable').dataTable({
+            "sPaginationType": "bootstrap",
+            "sDom": "<'row'<'col-xs-6 col-left'l><'col-xs-6 col-right'<'export-data'T>f>r>t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+            "oTableTools": {
+                "sSwfPath": "js/datatables/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                    "print",
+                    {
+                        "sExtends": "pdf",
+                        "sFileName": "product-requests.pdf"
+                    },
+                    {
+                        "sExtends": "csv",
+                        "sFileName": "product-requests.csv"
+                    },
+                    {
+                        "sExtends": "xls",
+                        "sFileName": "product-requests.xls"
+                    }
+                ]
+            },
             "columnDefs": [ {
                 "targets": 9,
                 "width": "20%",
@@ -45,7 +65,7 @@
             <th>Request Reference</th>
             <th>Status</th>
             <th>Category</th>
-            <th># Quotes</th>
+            <th><span id="tippy" data-toggle="tooltip" data-placement="top" title="Number of valid quotes attached to the Item Request">#Quotes</span></th>
             <th>Assigned</th>
             <th>Created</th>
             <th>Actions</th>
@@ -61,7 +81,7 @@
             <td>{{ $item_request->reference }}</td>
             <td>{{ $item_request->label($item_request->status) }}</td>
             <td>{{ $item_request->category->name }}</td>
-            <td>{{ count($item_request->quotations) }}</td>
+            <td>{{ count($item_request->validQuotations) }}</td>
             <td>{{ $item_request->assignedTo->first_name }}</td>
             <td>{{ $item_request->created_at->format('d-m-Y') }}</td>
             <td>{{-- link_to_route('item-requests.show', 'View', array($item_request->id), array('class' => 'btn btn-primary')) --}}
@@ -99,6 +119,6 @@
     }
 </script>
 
-
+@include('layouts.partials.scripts._datatables')
 
 @stop

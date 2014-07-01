@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.main')
 
 @section('content')
 <div class="container">
@@ -13,7 +13,6 @@
                 <p><strong>Quotation ID:</strong> {{ $quotation['id'] }}</p>
                 <p><strong>Created By:</strong> {{ $quotation->createdBy->first_name }}</p>
                 <p><strong>Created At:</strong> {{ $quotation['created_at'] }}</p><br/>
-                <p><strong>Item Request:</strong> {{ $quotation->itemRequest->name }}</p>
                 <p><strong>Product Name:</strong> {{ $quotation->product_name }}</p>
                 <p><strong>Product Code:</strong> {{ $quotation->product_code }}</p>
                 <p><strong>Supplier:</strong> {{ $quotation->supplier->name }}</p>
@@ -50,6 +49,39 @@
                     {{ link_to_route('quotations.edit', 'Edit', array($quotation->id), array('class' => 'btn btn-primary')) }} {{ link_to_route('quotations.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
                 </div>
             </div>
+
+            <!-- Comments -->
+            <div class="container col-lg-6">
+                <div class="row">
+                    <h2 class="">Comments</h2>
+                    @if (Session::has('comment_message'))
+                    <div class="row alert {{ Session::get('success') ? 'alert-success' : 'alert-danger' }} clearfix" data-dismiss="alert">
+                        {{ Session::get('comment_message') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    </div>
+                    @endif
+
+                    @if ( count($quotation->comments) )
+                        <div class="well bs-component">
+                            @foreach ($quotation->comments as $comment)
+                            <div>
+                                <h5>{{ $comment->user->first_name .' on ' . $comment->created_at }}</h5>
+                                <div class="well bs-component">
+                                    <p>{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <div class="form-group">
+                    <?php $type = 'Quotation'; ?>
+                    <?php $id = $quotation['id']; ?>
+                    @include('comments._form')
+                </div>
+            </div>
+
         </div>
     </div>
 

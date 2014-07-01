@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.main')
 
 @section('content')
 <div class="container">
@@ -45,6 +45,38 @@
                 <div class="form-group">
                     {{ link_to_route('item-requests.edit', 'Edit', array($item_request->id), array('class' => 'btn btn-primary')) }} {{ link_to_route('item-requests.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
                 </div>
+            </div>
+
+                <!-- Comments -->
+                <div class="container col-lg-6">
+                    <div class="row">
+                        <h2 class="">Comments</h2>
+                        @if (Session::has('comment_message'))
+                        <div class="row alert {{ Session::get('success') ? 'alert-success' : 'alert-danger' }} clearfix" data-dismiss="alert">
+                            {{ Session::get('comment_message') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        </div>
+                        @endif
+
+                        <div class="well bs-component">
+                            @foreach ($item_request->comments as $comment)
+                            <div>
+                                <h5>{{ $comment->user->first_name .' on ' . $comment->created_at }}</h5>
+                                <div class="well bs-component">
+                                    <p>{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <?php $type = 'ItemRequest'; ?>
+                        <?php $id = $item_request['id']; ?>
+                        @include('comments._form')
+                    </div>
+                </div>
+
 
 
 

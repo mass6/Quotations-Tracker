@@ -8,6 +8,10 @@
 		"cartalyst/sentry": "2.1.*",
         "codesleeve/laravel-stapler": "dev-master"
 	},
+    "require-dev": {
+        "way/generators": "2.*",
+        "barryvdh/laravel-ide-helper": "1.*"
+    },
 	"autoload": {
 		"classmap": [
 			"app/commands",
@@ -19,7 +23,10 @@
 		],
 		"files": [
 			"app/helpers.php"
-		]
+		],
+        "psr-4": {
+            "Acme\\": "App/Acme"
+        }
 	},
 	"scripts": {
 		"post-install-cmd": [

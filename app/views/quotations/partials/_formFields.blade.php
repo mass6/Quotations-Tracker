@@ -9,61 +9,52 @@
 <script type="text/javascript">
     $(document).ready(function () {
                 var line = ''
-        <?php if ( isset($item_request) && ! Session::has('create') ) { ?>
-                document.getElementById('item_request').value = "<?php echo $item_request->id; ?>"
-                document.getElementById('form-container').style.display = 'block';
-                document.getElementById('div_item_request_select').style.display = 'none';
-                document.getElementById('item_request_name').innerHTML = "<?php echo $item_request->name; ?>";
-                document.getElementById('item_request_created').innerHTML = "<?php echo $item_request->created_at->format('d-m-Y'); ?>";
-                // set attributes array
-                <?php $attributes = isset($attributes) ? $attributes : null; ?>
-                var attributes = <?php echo json_encode($attributes); ?>;
-                console.log(attributes)
-                if ( attributes != null){
-                    setAttributes(attributes);
-                }
-        <?php } ?>
-        // if validation fails during new record creation
-        <?php if (Session::has('create_revalidate')){ ?>
-                document.getElementById('form-container').style.display = 'block';
-                document.getElementById('div_item_request_select').style.display = 'none';
-                document.getElementById('btn-add-quotation').style.display = 'none';
-                document.getElementById("selecthelper").style.visibility = 'hidden';
-                document.getElementById('item_request_select').disabled = true;
-                document.getElementById('item_request_name').innerHTML = "<?php echo Session::has('item_request')
-                ? Session::get('item_request')['name'] . ' | ID: ' . Session::get('item_request')['id'] : null ; ?>";
-                document.getElementById('item_request_created').innerHTML = "<?php echo Session::has('item_request')
-                ? Session::get('item_request')['created_at']->format('d-m-Y') : null ; ?>";
-        <?php } ?>
+        <?php if ( isset($item_request) ) { ?>
+                 document.getElementById('item_request').value = "<?php echo $item_request->id ;?>";
+                 document.getElementById('item-request-data').style.display = "block"
+                 document.getElementById('item_request_name').innerHTML = "<?php echo 'No. ' . $item_request->id . ' | ' . $item_request->name; ?>";
+        <?php }  ?>
+
         // if validation fails during record update
         <?php if (Session::has('revalidate')){ ?>
-                // set attributes array
+            <?php if (Session::has('create_revalidate')){ ?>
+                    document.getElementById('item_request_name').innerHTML = "<?php echo Session::has('item_request')
+                    ? 'No. ' . Session::get('item_request')['id'] . ' | ' . Session::get('item_request')['name'] : null ; ?>";
+            <?php } ?>
+        <?php }  ?>
+
+        // Set attributes and values variables
+        <?php $attributes = isset($attributes) ? $attributes : null; ?>
+        var attributes = <?php echo json_encode($attributes); ?>;
+        <?php $values = isset($values) ? $values : null; ?>
+        var values = <?php echo json_encode($values); ?>;
+        console.log(values)
+
+        <?php if ( Session::has('attributes') ) { ?>
                 <?php $attributes = Session::has('attributes') ? json_encode(Session::get('attributes')) : null; ?>
                 var attributes = <?php echo $attributes; ?>;
-                // set attribute values array
+        <?php } ?>
+        <?php if ( Session::has('values') ) { ?>
                 <?php $values = Session::has('values') ? json_encode(Session::get('values')) : null; ?>
                 var values = <?php echo $values; ?>;
-
-                if ( attributes != null){
-                    setAttributes(attributes, values);
-                }
-
-         // load model form for editing
-        <?php } elseif (isset($reload)){ ?>
-                var attributes = <?php echo isset($attributes) ? $attributes : null; ?>;
-                var values = <?php echo isset($values) ? $values : null; ?>;
-                if ( attributes != null){
-                    if ( values == null){
-                        var values = []
-                        for (var i = 0; i <= attributes.length; i++)
-                        {
-                            values[i] = '';
-                        }
-                    }
-                   setAttributes(attributes, values);
-                }
-
         <?php } ?>
+
+
+        // Set attribute from elements
+        // if values is null, create empty values array
+        if ( attributes != null){
+
+            if ( values == null){
+                var values = []
+                for (var i = 0; i <= attributes.length; i++)
+                {
+                    values[i] = '';
+                }
+            }
+           setAttributes(attributes, values);
+        }
+
+
     });
 
     /**
@@ -106,6 +97,7 @@
     }
 </script>
 
+
 @if (isset($errors))
     @if ( count($errors) )
     <div class="errors alert alert-danger">
@@ -113,27 +105,26 @@
         {{ $message }}
         @endforeach
     </div>
+
     @endif
 @endif
 
+
+
+
     {{ Form::hidden('item_request', null, ['id'=>'item_request']) }}
         <fieldset>
-          <legend>Complete the fields below to add a new quotation</legend>
 
-         <div class="panel panel-primary"><br/>
+
+         <div id="item-request-data" class="panel panel-primary" style="display: none"><br/>
           <!-- Item Request data -->
           <div class="form-group">
             {{ Form::label('item_request_name', 'Item Request', ['class'=>'col-lg-2 control-label']) }}
-            <div class="col-lg-6">
+            <div class="col-lg-9">
                 <pre  id="item_request_name">{{ isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null }} | ID: {{ isset($quotation->itemRequest['id']) ? $quotation->itemRequest['id'] : null }}
                 </pre>
                 {{-- Form::text('item_request_name', isset($quotation->itemRequest['name']) ? $quotation->itemRequest['name'] : null, ['id' => 'item_request_name', 'class' => 'form-control col-lg-7']) --}}
-              <span class="help-block">Item Request that this quotation is attached to.</span>
-            </div>
-
-            <div class="col-lg-3 col-lg-offset-0">
-               <pre id="item_request_created">{{ isset($quotation->itemRequest['created_at']) ? $quotation->itemRequest['created_at']->format('d-m-Y') : null }}</pre>
-               <span class="help-block">Date item request was created</span>
+              <span class="help-block">Item Request that this Quotation will be attached to.</span>
             </div>
           </div>
         </div>
@@ -143,7 +134,7 @@
           <div class="form-group">
             {{ Form::label('supplier_id', 'Supplier / Validity Date', ['class'=>'col-lg-2 control-label']) }}
             <div class="col-lg-7">
-                {{ Form::select('supplier_id', $suppliers, null, ['id' => 'supplier', 'class' => 'form-control']) }}
+                {{ Form::select('supplier_id', Supplier::lists('name', 'id'), null, ['id' => 'supplier', 'class' => 'form-control']) }}
               <span class="pull-right">* Required</span>
               <span class="help-block">Supplier from which this quotation was received.</span>
                 {{ $errors->first('supplier', '<span class="label label-warning">:message</span>') }}
@@ -151,7 +142,7 @@
 
               <!-- validity date -->
               <div class="col-lg-3">
-                  {{ Form::input('date','valid_until', isset($valid_until) ? $valid_until : null, ['id'=>'valid_until','class'=>'form-control']) }}
+                  {{ Form::input('date','valid_until', isset($quotation->valid_until) ? $quotation->valid_until->format('d-m-Y') : null, ['id'=>'valid_until','class'=>'form-control']) }}
                   <span class="pull-right">* Required</span>
                   <span class="help-block">Date for which this quotation is valid for.</span>
                   {{ $errors->first('valid_until', '<span class="label label-warning">:message</span>') }}
@@ -206,7 +197,6 @@
             </div>
           </div>
       </div>
-
 
             <!-- attributes -->
           <div id="product-attributes" class="well bs-component" style="display:none">
@@ -284,7 +274,7 @@
             <div class="form-group">
                 {{ Form::label('status', 'Status', ['class'=>'col-lg-2 control-label']) }}
                 <div class="col-lg-5">
-                    {{ Form::select('status', $statuses, null, ['id' => 'status', 'class' => 'form-control']) }}
+                    {{ Form::select('status', Quotation::statuses(), null, ['id' => 'status', 'class' => 'form-control']) }}
                     <span class="pull-right">* Required</span>
                     <span class="help-block">Status of this quotation</span>
                     {{ $errors->first('status', '<span class="label label-warning">:message</span>') }}

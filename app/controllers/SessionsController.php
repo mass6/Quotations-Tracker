@@ -11,9 +11,96 @@ class SessionsController extends \BaseController {
 	 */
 	public function create()
 	{
-		return View::make('sessions.create')->with('title', 'Login');
+		return View::make('sessions.login')->with('title', 'Login');
 	}
 
+    public function authenticate()
+    {
+        /*
+	    Sample Processing of Forgot password form via ajax
+	    Page: extra-register.html
+        */
+
+        $data = Session::all();
+        Log::info($data);
+
+        # Response Data Array
+        $resp = array();
+
+
+        // Fields Submitted
+        $email = $_POST["username"];
+        $password = $_POST["password"];
+
+
+        // This array of data is returned for demo purpose, see assets/js/neon-forgotpassword.js
+        $resp['submitted_data'] = $_POST;
+
+
+        // Login success or invalid login data [success|invalid]
+        // Your code will decide if username and password are correct
+        $login_status = 'invalid';
+
+        // attempt to log in user
+        try
+        {
+            // Login credentials
+            $credentials = array(
+                'email' 	=> $email,
+                'password' 	=> $password,
+            );
+            Log::info('logging credentials below');
+            Log::info($credentials);
+
+            // Authenticate the user
+            $user = Sentry::authenticate($credentials, false);
+
+            $login_status == 'success';
+            $resp['login_status'] = 'success';
+            // Set the redirect url after successful login
+            $resp['redirect_url'] = Session::get('url')['intended'];
+            return Response::json($resp);
+
+        }
+        catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+        {
+            $messages[] = 'Login field is required.';
+        }
+        catch (Cartalyst\Sentry\Users\PasswordRequiredException $e)
+        {
+            $messages[] = 'Password field is required.';
+        }
+        catch (Cartalyst\Sentry\Users\WrongPasswordException $e)
+        {
+            $messages[] = 'Wrong password, try again.';
+        }
+        catch (Cartalyst\Sentry\Users\UserNotFoundException $e)
+        {
+            $messages[] = 'User was not found.';
+        }
+        catch (Cartalyst\Sentry\Users\UserNotActivatedException $e)
+        {
+            $messages[] = 'User is not activated.';
+        }
+            // The following is only required if the throttling is enabled
+        catch (Cartalyst\Sentry\Throttling\UserSuspendedException $e)
+        {
+            $messages[] = 'User is suspended.';
+        }
+        catch (Cartalyst\Sentry\Throttling\UserBannedException $e)
+        {
+            $messages[] = 'User is banned.';
+        }
+
+        // if authentication is fails
+        if (!isset($user)){
+            Log::info('no user found');
+            $login_status = 'invalid';
+            $resp['login_status'] = $login_status;
+            return Response::json( $resp );
+        }
+
+    }
 
 	/**
 	 * Store a newly created resource in storage.

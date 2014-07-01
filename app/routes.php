@@ -10,10 +10,15 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
+
+App::bind('SneadInterface', 'Snead');
 // Test routes
 Route::get('/test', function(){
     return Quotation::find(2)->itemRequests;
 });
+
+Route::get('/reports' , 'HomeController@getReport');
+Route::get('/service' , 'HomeController@testService');
 
 // Public routes
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
@@ -21,6 +26,7 @@ Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 // Authentication routes
 Route::get('login', 'SessionsController@create');
+Route::post('login/authenticate', 'SessionsController@authenticate');
 Route::get('logout', 'SessionsController@destroy');
 Route::get('password/forgot', ['as' => 'forgotpassword', 'uses' => 'ProfilesController@forgotPassword']);
 Route::post('password/request/{email}', ['as' => 'passwordresetrequest', 'uses' => 'ProfilesController@requestResetPassword']);
@@ -48,6 +54,7 @@ Route::group(array('before' => 'auth'), function()
     Route::get('item-requests/myrequests', ['as' => 'myrequests', 'uses' => 'UserItemRequestsController@getMyRequests']);
     Route::resource('item-requests', 'ItemRequestsController');
     Route::resource('{userId}/item-requests', 'UserItemRequestsController');
+    Route::patch('item-requests/attach/{item_request}/{quotation}', ['as' => 'attach-quotation', 'uses' => 'ItemRequestsController@attachRequest']);
 
     // Quotations
     Route::get('quotations/create/{item_request}', ['as' => 'quotations.createFromItemRequest', 'uses' => 'QuotationsController@create']);
@@ -56,6 +63,15 @@ Route::group(array('before' => 'auth'), function()
         'as' => 'quotations.select',
         'uses' => 'QuotationsController@select'
     ));
+    Route::patch('quotations/detach/{quotation}/{item_request}', ['as' => 'detach-request', 'uses' => 'QuotationsController@detachRequest']);
+    Route::patch('quotations/attach/{quotation}', ['as' => 'attach-request', 'uses' => 'QuotationsController@attachRequest']);
+
+    // Comments
+    Route::put('comments/{type}/{id}', ['as'=>'comments.store', 'uses'=>'CommentsController@store']);
+
+
+    // Dashboard
+    Route::get('/dashboard', ['as' => 'dashboard', 'uses' => 'HomeController@getDashboard']);
 
 
 
@@ -94,3 +110,5 @@ Route::get('show', function()
 {
 	return View::make('quotations.show', array('title' => 'Quotes') );
 });
+
+
