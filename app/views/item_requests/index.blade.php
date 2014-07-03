@@ -46,15 +46,14 @@
 
 @section('content')
 
-<div class="row">
-    <div class="page-header">
+
         {{ link_to_route('myrequests', 'My Requests', null, ['class'=>'btn btn-warning pull-right'])  }}
         @if (isset($filtered))
         {{ link_to_route('item-requests.index', 'Show All', null, ['class'=>'btn btn-primary pull-right'])  }}
         @endif
-        <h1>{{ isset($heading) ? $heading : 'All Item Requests' }}<h1><hr/>
+        <h2>{{ isset($heading) ? $heading : 'All Item Requests' }}</h2>
         <p class="text-left">{{ link_to_route('item-requests.create', 'Add new Item Request', null, array('class'=>'btn btn-info')) }}</p>
-    </div>
+
     @if ($item_requests->count())
     <table id="datatable" class="table table-striped table-bordered">
         <thead>
@@ -99,7 +98,7 @@
     @else
     There are no Item requests
     @endif
-</div>
+
 
 <script type="text/javascript">
     function btnClicked(elname, id)

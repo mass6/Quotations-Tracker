@@ -9,8 +9,8 @@
     <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->
 
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="{{ URL::asset('images/thumb-1@2x.png') }}" alt="" class="img-circle" width="44" />
-            Art Ramadani
+            <img src="{{-- User::find(Sentry::getUser()->id)->avatar->url('thumb') --}}" alt="" class="img-circle" width="44" />
+            {{ User::find(Sentry::getUser()->id)->first_name }}
         </a>
 
         <ul class="dropdown-menu">
@@ -20,7 +20,7 @@
 
             <!-- Profile sub-links -->
             <li>
-                <a href="extra-timeline.html">
+                <a href="{{ route('profile.edit', Sentry::getUser()->id) }}">
                     <i class="entypo-user"></i>
                     Edit Profile
                 </a>

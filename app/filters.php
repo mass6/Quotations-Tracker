@@ -42,6 +42,20 @@ Route::filter('auth', function()
 	}
 });
 
+Route::filter('user', function($route)
+{
+    //if ( Sentry::check()) return Redirect::guest('login');
+    if ( ! Sentry::check())
+    {
+        return Redirect::guest('login');
+    }
+
+    if (Sentry::getUser()->id !== $route->parameter('user')){
+        return Redirect::home();
+    }
+
+});
+
 
 Route::filter('auth.basic', function()
 {

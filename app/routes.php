@@ -11,17 +11,43 @@
 |
 */
 
+
+Event::listen('laravel.*', function($param)
+{
+    Log::info($param);
+});
+
+
+
 App::bind('SneadInterface', 'Snead');
+
 // Test routes
 Route::get('/test', function(){
     return Quotation::find(2)->itemRequests;
+});
+Route::get('zap', function(){
+    $user = Sentry::findUserById(1);
+    $resetCode = $user->getResetPasswordCode();
+
+    // Update the user
+    if ($user->save())
+
+    if ($user->attemptResetPassword($resetCode, 'sc121212'))
+    {
+        return Redirect::to('login')->with('flash_message', 'Password updated!')->with('success', true);
+    }
+    else
+    {
+        return Redirect::back()->with('flash_message', 'Password not saved! Please try again.');
+    }
+
 });
 
 Route::get('/reports' , 'HomeController@getReport');
 Route::get('/service' , 'HomeController@testService');
 
 // Public routes
-Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+
 Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
 
 // Authentication routes
@@ -29,6 +55,7 @@ Route::get('login', 'SessionsController@create');
 Route::post('login/authenticate', 'SessionsController@authenticate');
 Route::get('logout', 'SessionsController@destroy');
 Route::get('password/forgot', ['as' => 'forgotpassword', 'uses' => 'ProfilesController@forgotPassword']);
+Route::post('password/reset', 'ProfilesController@sendResetCode');
 Route::post('password/request/{email}', ['as' => 'passwordresetrequest', 'uses' => 'ProfilesController@requestResetPassword']);
 Route::patch('password/store/{user}/{token}', ['as' => 'passwordupdate', 'uses' => 'ProfilesController@updatePassword']);
 Route::get('password/reset/{token}', ['as' => 'resetpassword', 'uses' => 'ProfilesController@resetPassword']);
@@ -38,6 +65,16 @@ Route::resource('sessions', 'SessionsController', ['only' => ['create', 'store',
 // Member routes
 Route::group(array('before' => 'auth'), function()
 {
+    // Home page
+    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+
+    // User Profiles
+    Route::group(array('before' => 'user'), function()
+    {
+        Route::get('profile/{user}/edit', ['as'=>'profile.edit', 'uses'=>'ProfilesController@edit']);
+        Route::patch('profile/{user}', ['as'=>'profile.update', 'uses'=>'ProfilesController@update']);
+    });
+
     // Customers
     Route::resource('customers', 'CustomersController');
 
@@ -48,7 +85,11 @@ Route::group(array('before' => 'auth'), function()
     Route::resource('categories', 'CategoriesController');
 
     // Attributes
-    Route::resource('attributes', 'AttributesController'); 
+    Route::resource('attributes', 'AttributesController');
+
+    // Portal Data
+    Route::get('portal/contracts', ['as' => 'portal.contracts', 'uses' => 'PortalController@getContracts']);
+    Route::get('portal/users', ['as' => 'portal.users', 'uses' => 'PortalController@getUsers']);
 
     // Item Requests
     Route::get('item-requests/myrequests', ['as' => 'myrequests', 'uses' => 'UserItemRequestsController@getMyRequests']);

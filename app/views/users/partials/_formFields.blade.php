@@ -26,7 +26,7 @@
 
       <div class="form-group">
       {{ Form::label('password', 'Password:') }}
-      {{ Form::password('password', ['class' => 'form-control']) }}
+      {{ Form::password('password', ['class' => 'form-control', 'autocomplete'=>'off']) }}
       {{ $errors->first('password', '<span class="label label-warning">:message</span>') }}
       </div>
 

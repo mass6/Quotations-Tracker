@@ -21,16 +21,18 @@ var neonForgotPassword = neonForgotPassword || {};
 		neonForgotPassword.$container.validate({
 			rules: {
 				
-				email: {
+				password: {
 					required: true,
-					email: true
+				},
+                passwordconfirmation: {
+					required: true,
 				}
 			},
 			
 			messages: {
 				
-				email: {
-					email: 'Invalid E-mail.'
+				password: {
+					password: 'Passwords does not match.'
 				}	
 			},
 			
@@ -44,63 +46,7 @@ var neonForgotPassword = neonForgotPassword || {};
 				$(element).closest('.input-group').removeClass('validate-has-error');
 			},
 			
-			submitHandler: function(ev)
-			{
-				$(".login-page").addClass('logging-in');
-				
-				// We consider its 30% completed form inputs are filled
-				neonForgotPassword.setPercentage(30, function()
-				{
-					// Lets move to 98%, meanwhile ajax data are sending and processing
-					neonForgotPassword.setPercentage(98, function()
-					{
-						// Send data to the server
-						$.ajax({
-							url: baseurl + '/password/reset',
-							method: 'POST',
-							dataType: 'json',
-							data: {
-								email: $("input#email").val(),
-							},
-							error: function()
-							{
-								alert("An error occoured!");
-							},
-							success: function(response)
-							{
-                                console.log(response);
-								// From response you can fetch the data object retured
-								var email = response.submitted_data.email;
-								
-								
-								// Form is fully completed, we update the percentage
-								neonForgotPassword.setPercentage(100);
-								
-								
-								// We will give some time for the animation to finish, then execute the following procedures	
-								setTimeout(function()
-								{
-									// Hide the description title
-									$(".login-page .login-header .description").slideUp();
-									
-									// Hide the register form (steps)
-									neonForgotPassword.$steps.slideUp('normal', function()
-									{
-										// Remove loging-in state
-										$(".login-page").removeClass('logging-in');
-										
-										// Now we show the success message
-										$(".form-forgotpassword-success").slideDown('normal');
-										
-										// You can use the data returned from response variable
-									});
-									
-								}, 1000);
-							}
-						});
-					});
-				});
-			}
+
 		});
 	
 		// Steps Handler

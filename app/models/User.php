@@ -2,10 +2,25 @@
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
+use Codesleeve\Stapler\ORM\StaplerableInterface;
+use Codesleeve\Stapler\ORM\EloquentTrait;
 
 
-class User extends BaseModel implements UserInterface, RemindableInterface {
+class User extends Eloquent implements UserInterface, RemindableInterface, StaplerableInterface
+{
 
+    use EloquentTrait;
+
+    public function __construct(array $attributes = array()) {
+        $this->hasAttachedFile('avatar', [
+            'styles' => [
+                'medium' => '300x300',
+                'thumb' => '100x100'
+            ]
+        ]);
+
+        parent::__construct($attributes);
+    }
 
     /**
      * Defined attributes that may not be mass-assigned
@@ -19,7 +34,7 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
      *
      * @var array
      */
-    protected $fillable = [];
+    //protected $fillable = [];
 
 
 
@@ -110,21 +125,41 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
-    public function assignedRequests()
+    /**
+     * Relationship definition to Profile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profile()
     {
-        return $this->hasMany('ItemRequest', 'assigned_to');
+        return $this->hasOne('Profile');
     }
 
+    /**
+     * Relationship definition to Item Requests (created_by)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function createdRequests()
     {
         return $this->hasMany('ItemRequest', 'created_by');
     }
 
-
-    public function user_id()
+    /**
+     * Relationship definition to Item Requests (assigned_to)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function assignedRequests()
     {
-        $this->hasMany('ItemRequest');
+        return $this->hasMany('ItemRequest', 'assigned_to');
     }
+
+
+//    public function user_id()
+//    {
+//        $this->hasMany('ItemRequest');
+//    }
 
     public function comments()
     {

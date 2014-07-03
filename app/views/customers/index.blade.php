@@ -49,11 +49,10 @@
 
 @section('content')
 
-<div class="row">
-    <div class="page-header">
-        <h1>All Customers</h1>
-        <p class="text-left">{{ link_to_route('customers.create', 'Add new customer', null, array('class'=>'btn btn-info')) }}</p>
-    </div>
+
+    <h2>Customers</h2>
+    <p class="text-left">{{ link_to_route('customers.create', 'Add new customer', null, array('class'=>'btn btn-info')) }}</p>
+
     @if ($customers->count())
     <table id="datatable" class="table table-striped table-bordered">
         <thead>
@@ -78,7 +77,6 @@
     @else
     There are no customers
     @endif
-</div>
 
 @include('layouts.partials.scripts._datatables')
 @stop

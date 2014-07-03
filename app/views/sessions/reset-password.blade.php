@@ -8,7 +8,7 @@
     <meta name="description" content="Neon Admin Panel" />
     <meta name="author" content="" />
 
-    <title>Insight | Login</title>
+    <title>Insight | Forgot Password</title>
 
 
     <link rel="stylesheet" href="{{ URL::asset('js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css') }}">
@@ -32,7 +32,7 @@
 
 
 </head>
-<body class="page-body login-page login-form-fall" data-url="http://36s-insight.net">
+<body class="page-body login-page login-form-fall" data-url="http://neon.dev">
 
 
 <!-- This is needed when you send requests via Ajax --><script type="text/javascript">
@@ -40,12 +40,7 @@
 </script>
 
 <div class="login-container">
-    @if (Session::has('flash_message'))
-    <div class="row alert {{ Session::get('success') ? 'alert-success' : 'alert-danger' }} clearfix" data-dismiss="alert">
-        {{ Session::get('flash_message') }}
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    </div>
-    @endif
+
     <div class="login-header login-caret">
 
         <div class="login-content">
@@ -54,12 +49,12 @@
                 <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />
             </a>
 
-            <p class="description">Hello again! Please log in to access this site.</p>
+            <p class="description">Enter a new password.</p>
 
             <!-- progress bar indicator -->
             <div class="login-progressbar-indicator">
                 <h3>43%</h3>
-                <span>logging in...</span>
+                <span>processing your request...</span>
             </div>
         </div>
 
@@ -73,58 +68,51 @@
 
         <div class="login-content">
 
-            <div class="form-login-error">
-                <h3>Invalid login</h3>
-                <p>Enter <strong>demo</strong>/<strong>demo</strong> as login and password.</p>
+            {{ Form::open(array('route' => array('passwordupdate', $user['id'], $token), 'id'=>'form_forgot_password', 'method' => 'PATCH')) }}
+
+
+            <div class="form-forgotpassword-success">
+                <i class="entypo-check"></i>
+                <h3>Reset email has been sent.</h3>
+                <p>Please check your email for the reset link.</p>
             </div>
 
-            <form method="post" role="form" id="form_login">
+            <div class="form-steps">
 
-                <div class="form-group">
+                <div class="step current" id="step-1">
 
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="entypo-user"></i>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="entypo-mail"></i>
+                            </div>
+
+<!--                            <input type="text" class="form-control" name="email" id="email" placeholder="Email" data-mask="email" autocomplete="off" />-->
+                            {{ Form::password('password', ['class' => 'form-control', 'placeholder'=>'new password', 'autocomplete'=>'off']) }}
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="entypo-mail"></i>
+                            </div>
 
-                        <input type="text" class="form-control" name="username" id="username" placeholder="Username" autocomplete="off" />
+<!--                            <input type="text" class="form-control" name="email" id="email" placeholder="Email" data-mask="email" autocomplete="off" />-->
+                            {{ Form::password('password_confirmation', ['class' => 'form-control', 'placeholder'=>'confirm password', 'autocomplete'=>'off']) }}
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-info btn-block btn-login">
+                            Submit
+                            <i class="entypo-right-open-mini"></i>
+                        </button>
                     </div>
 
                 </div>
 
-                <div class="form-group">
-
-                    <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="entypo-key"></i>
-                        </div>
-
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" autocomplete="off" />
-
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary btn-block btn-login">
-                        <i class="entypo-login"></i>
-                        Login In
-                    </button>
-                </div>
-
-
-            {{ Form::close() }}
-
-
-            <div class="login-bottom-links">
-
-<!--                <a href="extra-forgot-password.html" class="link">Forgot your password?</a>-->
-                {{ link_to_route('forgotpassword', 'Forgot your password?', ['class'=>'link']) }}
-
-                <br />
-
             </div>
+
 
         </div>
 
@@ -134,7 +122,6 @@
 
 
 <!-- Bottom Scripts -->
-
 <script src="{{ URL::asset('js/gsap/main-gsap.js') }}"></script>
 <script src="{{ URL::asset('js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js') }}"></script>
 <script src="{{ URL::asset('js/bootstrap.js') }}"></script>
@@ -142,7 +129,7 @@
 <script src="{{ URL::asset('js/resizeable.js') }}"></script>
 <script src="{{ URL::asset('js/neon-api.js') }}"></script>
 <script src="{{ URL::asset('js/jquery.validate.min.js') }}"></script>
-<script src="{{ URL::asset('js/neon-login.js') }}"></script>
+<script src="{{ URL::asset('js/neon-resetpassword.js') }}"></script>
 <script src="{{ URL::asset('js/neon-custom.js') }}"></script>
 
 </body>

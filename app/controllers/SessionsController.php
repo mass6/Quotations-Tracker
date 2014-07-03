@@ -40,7 +40,11 @@ class SessionsController extends \BaseController {
         // Login success or invalid login data [success|invalid]
         // Your code will decide if username and password are correct
         $login_status = 'invalid';
-
+//        $newuser = Sentry::authenticate(array(
+//            'email' => 'samcharmy@gmail.com',
+//            'passsword' => 'sc121212'
+//        ));
+//        Log::info($newuser);
         // attempt to log in user
         try
         {
@@ -49,12 +53,12 @@ class SessionsController extends \BaseController {
                 'email' 	=> $email,
                 'password' 	=> $password,
             );
-            Log::info('logging credentials below');
+            Log::info('login credentials below');
             Log::info($credentials);
 
             // Authenticate the user
-            $user = Sentry::authenticate($credentials, false);
-
+            $user = Sentry::authenticate($credentials);
+            Log::info($user);
             $login_status == 'success';
             $resp['login_status'] = 'success';
             // Set the redirect url after successful login

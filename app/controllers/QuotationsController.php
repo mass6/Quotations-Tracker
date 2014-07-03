@@ -218,7 +218,7 @@ class QuotationsController extends \BaseController {
 	{
         $quotation = Quotation::find($id);
         $user = User::find(Sentry::getUser()->id);
-        if ($quotation->createdBy != $user && $quotation->status == 'draft')
+        if ($quotation->createdBy->id !== $user->id && $quotation['status'] === 'draft')
         {
             return Redirect::back()->with('flash_message', "Sorry, you can only edit quotations drafts that are created by to you.");
         }

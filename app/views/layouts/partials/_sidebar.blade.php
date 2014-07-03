@@ -5,7 +5,7 @@
 
     <!-- logo -->
     <div class="logo">
-        <a href="index.html">
+        <a href="/home">
             <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />
         </a>
     </div>
@@ -55,8 +55,26 @@
     </ul>
 </li>
 <li class="auto-inherit-active-class">
+    <a href="{{ route('portal.contracts') }}">
+        <i class="entypo-archive"></i>
+        <span>Portal Data</span>
+    </a>
+    <ul>
+        <li class="{{ isActive('contracts', 2) }}">
+            <a href="{{ route('portal.contracts') }}">
+                <span>Contracts</span>
+            </a>
+        </li>
+        <li class="{{ isActive('users', 2) }}">
+            <a href="{{ route('portal.users') }}">
+                <span>Portal Users</span>
+            </a>
+        </li>
+    </ul>
+</li>
+<li class="auto-inherit-active-class">
     <a href="{{ route('quotations.index') }}">
-        <i class="entypo-newspaper"></i>
+        <i class="entypo-archive"></i>
         <span>Products Quotations</span>
     </a>
     <ul>
@@ -77,18 +95,25 @@
         </li>
     </ul>
 </li>
-<li class="{{ isActive('customers', 1) }}">
+<li class="auto-inherit-active-class">
     <a href="{{ route('customers.index') }}">
-        <i class="entypo-newspaper"></i>
-        <span>Customers</span>
+        <i class="entypo-users"></i>
+        <span>Partners</span>
     </a>
+    <ul>
+        <li class="{{ isActive('customers', 1) }}">
+            <a href="{{ route('customers.index') }}">
+                <span>Customers</span>
+            </a>
+        </li>
+        <li class="{{ isActive('suppliers', 1) }}">
+            <a href="{{ route('suppliers.index') }}">
+                <span>Suppliers</span>
+            </a>
+        </li>
+    </ul>
 </li>
-<li class="{{ isActive('suppliers', 1) }}">
-    <a href="{{ route('suppliers.index') }}">
-        <i class="entypo-newspaper"></i>
-        <span>Suppliers</span>
-    </a>
-</li>
+
 </ul>
 
 </div>
@@ -97,9 +122,13 @@
     $(document).ready(function () {
         var menu = document.getElementById('main-menu')
         var elem = menu.getElementsByClassName('active')[0]
-        var parent = elem.parentNode
-        if(parent.id !== 'main-menu'){
-            parent.parentNode.className += " opened"
+        if (elem){
+            var parent = elem.parentNode
+            if(parent.id !== 'main-menu'){
+                parent.parentNode.className += " opened"
+            }
+        } else {
+            document.getElementById('nav-dashboards').className = " active"
         }
     });
 </script>

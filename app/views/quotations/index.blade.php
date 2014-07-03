@@ -12,7 +12,7 @@
 
 <script class="init" type="text/javascript">
     $(document).ready(function() {
-        $('#datatable').dataTable({
+        var table = $('#datatable').dataTable({
             "sPaginationType": "bootstrap",
             "sDom": "<'row'<'col-xs-6 col-left'l><'col-xs-6 col-right'<'export-data'T>f>r>t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
             "oTableTools": {
@@ -46,11 +46,9 @@
 
 @section('content')
 
-<div class="row">
-    <div class="page-header">
-        <h1>{{ isset($heading) ? $heading : 'All Quotations' }}<h1><hr/>
-        <p class="text-left">{{ link_to_route('quotations.create', 'Add new quotation', null, array('class'=>'btn btn-info')) }}</p>
-    </div>
+<h2>{{ isset($heading) ? $heading : 'All Quotations' }}</h2>
+<p class="text-left">{{ link_to_route('quotations.create', 'Add new quotation', null, array('class'=>'btn btn-info')) }}</p>
+
     @if ($quotations->count())
     <table id="datatable" class="table table-striped table-bordered">
         <thead>
@@ -87,7 +85,6 @@
     @else
     There are no Quotations
     @endif
-</div>
 
 @include('layouts.partials.scripts._datatables')
 @stop
