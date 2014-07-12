@@ -62,7 +62,8 @@ class SessionsController extends \BaseController {
             $login_status == 'success';
             $resp['login_status'] = 'success';
             // Set the redirect url after successful login
-            $resp['redirect_url'] = Session::get('url')['intended'];
+//            $resp['redirect_url'] = Session::get('url')['intended'];
+            $resp['redirect_url'] = isset(Session::get('url')['intended'])?:'/';
             return Response::json($resp);
 
         }
@@ -101,6 +102,7 @@ class SessionsController extends \BaseController {
             Log::info('no user found');
             $login_status = 'invalid';
             $resp['login_status'] = $login_status;
+            $resp['messages'] = $messages;
             return Response::json( $resp );
         }
 

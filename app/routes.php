@@ -11,19 +11,25 @@
 |
 */
 
+//$date = new DateTime('+1 week');
+//dd($date->format('d-m-Y'));
 
-Event::listen('laravel.*', function($param)
-{
-    Log::info($param);
+
+DB::listen(function($sql){
+    //var_dump($sql);
 });
 
+Route::get('/ajaxreport/contracts', 'AjaxController@getContracts');
+
+Route::get('/contracts/rebuild', 'PortalController@rebuildContractsIndex');
+Route::get('/users/rebuild', 'PortalController@rebuildUsersIndex');
 
 
 App::bind('SneadInterface', 'Snead');
 
 // Test routes
-Route::get('/test', function(){
-    return Quotation::find(2)->itemRequests;
+Route::get('/testpage', function(){
+    return View::make('testpage');
 });
 Route::get('zap', function(){
     $user = Sentry::findUserById(1);
@@ -46,9 +52,13 @@ Route::get('zap', function(){
 Route::get('/reports' , 'HomeController@getReport');
 Route::get('/service' , 'HomeController@testService');
 
+/*****************************************************
+ *
+ *
+ */
 // Public routes
 
-Route::get('/home', ['as' => 'home', 'uses' => 'HomeController@index']);
+
 
 // Authentication routes
 Route::get('login', 'SessionsController@create');
@@ -66,7 +76,7 @@ Route::resource('sessions', 'SessionsController', ['only' => ['create', 'store',
 Route::group(array('before' => 'auth'), function()
 {
     // Home page
-    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@getDashboard']);
 
     // User Profiles
     Route::group(array('before' => 'user'), function()
@@ -90,6 +100,18 @@ Route::group(array('before' => 'auth'), function()
     // Portal Data
     Route::get('portal/contracts', ['as' => 'portal.contracts', 'uses' => 'PortalController@getContracts']);
     Route::get('portal/users', ['as' => 'portal.users', 'uses' => 'PortalController@getUsers']);
+    Route::get('portal/products', ['as' => 'portal.products', 'uses' => 'PortalController@getProducts']);
+    Route::get('portal/budgets', ['as' => 'portal.budgets', 'uses' => 'PortalController@getBudgets']);
+    Route::get('portal/approvals', ['as' => 'portal.approvals', 'uses' => 'PortalController@getApprovals']);
+    Route::get('portal/doa', ['as' => 'portal.doa', 'uses' => 'PortalController@getDoa']);
+    Route::get('portal/products', ['as' => 'portal.products', 'uses' => 'PortalController@getProducts']);
+    Route::get('portal/orders/search', ['as' => 'portal.orders.search', 'uses' => 'PortalController@searchOrders']);
+    Route::get('portal/orders/{period}', ['as' => 'portal.orders.period', 'uses' => 'PortalController@getOrders']);
+    Route::get('portal/orders/details/{id}', ['as' => 'portal.orders.details', 'uses' => 'PortalController@getOrderDetails']);
+    Route::get('portal/orders', function(){
+        return Redirect::route('portal.orders.period',['period'=>'today']);
+    });
+    Route::get('/ajax/{report}', 'AjaxController@getReport');
 
     // Item Requests
     Route::get('item-requests/myrequests', ['as' => 'myrequests', 'uses' => 'UserItemRequestsController@getMyRequests']);

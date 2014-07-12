@@ -1,20 +1,24 @@
 <?php
-
+use Insight\Entities\Quotation;
+use Insight\Entities\ItemRequest;
+use Insight\Entities\User;
+use Insight\Entities\Supplier;
+use Insight\Entities\Attachment;
 use Acme\Repositories\MyInterface;
 
 class QuotationsController extends \BaseController {
 
-    protected $quotation;
+//    protected $quotation;
+//
+//    public function __construct(MyInterface $quotation)
+//    {
+//        $this->quotation = $quotation;
+//    }
 
-    public function __construct(MyInterface $quotation)
-    {
-        $this->quotation = $quotation;
-    }
-
-    public function subscribe($events)
-    {
-        $events->listen('quotation.update', 'QuotationsController@logUpdate', 10);
-    }
+//    public function subscribe($events)
+//    {
+//        $events->listen('quotation.update', 'QuotationsController@logUpdate', 10);
+//    }
 
     public function logUpdate($event)
     {
@@ -27,8 +31,8 @@ class QuotationsController extends \BaseController {
 	 */
 	public function index()
 	{
-        //$quotations = Quotation::all();
-        $quotations = $this->quotation->getAll();
+        $quotations = Quotation::all();
+        //$quotations = $this->quotation->getAll();
 		return View::make('quotations.index', compact('quotations'));
 	}
 
@@ -51,6 +55,12 @@ class QuotationsController extends \BaseController {
             // Get required attributes from Item Request. After quotation creation,
             // the attributes will be stored in quotation model
             $attributes = json_decode($item_request->attributes);
+
+            JavaScript::put([
+                'itemrequest'    => $item_request,
+                'attributes'     => $attributes
+            ]);
+
             //$user = $item_request->assignedTo->first_name;
             return View::make('quotations.create', compact('item_request', 'attributes', 'suppliers', 'statuses'));
 //            $response = array(
@@ -113,11 +123,6 @@ class QuotationsController extends \BaseController {
 	{
         $input = Input::all();
         $input['created_by'] = Sentry::getUser()->id;
-        if ( Input::has('valid_until') )
-        {
-            $input['valid_until'] = Carbon::createFromFormat('d-m-Y', $input['valid_until']);
-        }
-
         if ( Input::has('attributes') )
         {
             $attributes = Input::get('attributes');
@@ -151,7 +156,6 @@ class QuotationsController extends \BaseController {
         {
             // TODO : Make create and update array instead of listing columns individually
             $quotation = Quotation::create(array(
-                'item_request'          => $input['item_request'],
                 'supplier_id'           => $input['supplier_id'],
                 'valid_until'           => $input['valid_until'],
                 'product_name'          => $input['product_name'],
@@ -227,8 +231,11 @@ class QuotationsController extends \BaseController {
         $attributes = json_decode($quotation->attributes);
         $values = json_decode($quotation->attribute_values);
         $item_requests = $quotation->itemRequests();
+        $item_requests_list = ItemRequest::lists('name', 'id');
+        $suppliers = Supplier::lists('name', 'id');
+        $statuses = Quotation::statuses();
 
-        return View::make('quotations.edit', compact('quotation','item_requests','attributes','values'));
+        return View::make('quotations.edit', compact('quotation','item_requests','attributes','values', 'item_requests_list', 'suppliers', 'statuses'));
 	}
 
 
@@ -241,11 +248,6 @@ class QuotationsController extends \BaseController {
 	public function update($id)
 	{
         $input = Input::all();
-        if ( $input['valid_until'] != null)
-        {
-            $input['valid_until'] = Carbon::createFromFormat('d-m-Y', $input['valid_until']);
-        }
-
         $quotation = Quotation::find($id);
         //return Input::all();
         if ( Input::has('attributes') )
@@ -273,13 +275,11 @@ class QuotationsController extends \BaseController {
                 ->with('success', false)
                 ->with('attributes', $input['attributes'])
                 ->with('values', $attributeValues)
-                ->with('item_request', ItemRequest::find($input['item_request']))
                 ->with('revalidate', 'revalidate');
         }
         else{
             // TODO : change to defined array
             $quotation->update(array(
-                'item_request'          => $input['item_request'],
                 'supplier_id'           => $input['supplier_id'],
                 'valid_until'           => $input['valid_until'],
                 'product_name'          => $input['product_name'],

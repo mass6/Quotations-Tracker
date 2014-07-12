@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 
 class Category extends BaseModel
 
@@ -34,7 +34,7 @@ class Category extends BaseModel
      */
     public function itemRequests()
     {
-        return $this->hasMany('ItemRequest');
+        return $this->hasMany('Insight\Entities\ItemRequest');
     }
 
 

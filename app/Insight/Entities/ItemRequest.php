@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 
 class ItemRequest extends BaseModel
 
@@ -61,7 +61,7 @@ class ItemRequest extends BaseModel
      */
     public function customer()
     {
-        return $this->belongsTo('Customer');
+        return $this->belongsTo('Insight\Entities\Customer');
     }
 
     /**
@@ -71,7 +71,7 @@ class ItemRequest extends BaseModel
      */
     public function category()
     {
-        return $this->belongsTo('Category');
+        return $this->belongsTo('Insight\Entities\Category');
     }
 
     /**
@@ -81,7 +81,7 @@ class ItemRequest extends BaseModel
      */
     public function quotations()
     {
-        return $this->belongsToMany('Quotation')->withTimestamps();
+        return $this->belongsToMany('Insight\Entities\Quotation')->withTimestamps();
     }
 
     /**
@@ -101,7 +101,7 @@ class ItemRequest extends BaseModel
      */
     public function assignedTo()
     {
-        return $this->belongsTo('User', 'assigned_to');
+        return $this->belongsTo('Insight\Entities\User', 'assigned_to');
     }
 
     /**
@@ -111,7 +111,7 @@ class ItemRequest extends BaseModel
      */
     public function createdBy()
     {
-        return $this->belongsTo('User', 'created_by');
+        return $this->belongsTo('Insight\Entities\User', 'created_by');
     }
 
     /**
@@ -121,7 +121,7 @@ class ItemRequest extends BaseModel
      */
     public function attachments()
     {
-        return $this->morphMany('Attachment', 'attachable');
+        return $this->morphMany('Insight\Entities\Attachment', 'attachable');
     }
 
     /**
@@ -131,7 +131,7 @@ class ItemRequest extends BaseModel
      */
     public function comments()
     {
-        return $this->morphMany('Comment', 'commentable');
+        return $this->morphMany('Insight\Entities\Comment', 'commentable');
     }
 
     /**

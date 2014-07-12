@@ -1,9 +1,13 @@
-<?php
+<?php namespace Insight\Entities;
 /**
  * BaseModel
  * Used as parent model for extending all other models
  * for ease of validation
  */
+
+use \Eloquent;
+use \Request;
+use \Validator;
 
 class BaseModel extends Eloquent
 {

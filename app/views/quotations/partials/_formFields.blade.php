@@ -1,14 +1,13 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script>
-    $(function() {
-        $( "#valid_until" ).datepicker({ format: "dd-mm-yyyy" });
-
-    });
+//    $(function() {
+//        $( "#valid_until" ).datepicker({ format: "dd-mm-yyyy" });
+//
+//    });
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
-                var line = ''
         <?php if ( isset($item_request) ) { ?>
                  document.getElementById('item_request').value = "<?php echo $item_request->id ;?>";
                  document.getElementById('item-request-data').style.display = "block"
@@ -44,7 +43,7 @@
         // if values is null, create empty values array
         if ( attributes != null){
 
-            if ( values == null){
+            if ( values == null || typeof(values)==='undefined'){
                 var values = []
                 for (var i = 0; i <= attributes.length; i++)
                 {
@@ -64,14 +63,14 @@
      * @param attributes
      * @param values
      */
-    function setAttributes(attributes, values = null)
+    function setAttributes(attributes, values)
     {
         var attributeCount = attributes.length;
         // if model has defined attributes
         if ( attributeCount )
         {
             // ensure values array is defined with at least empty strings
-            if (values == null){
+            if (values == null || typeof(values)==='undefined' ){
                 var values = [];
                 for (var i = 0; i <= attributes.length; i++){
                     values[i] = '';
@@ -112,7 +111,7 @@
 
 
 
-    {{ Form::hidden('item_request', null, ['id'=>'item_request']) }}
+
         <fieldset>
 
 
@@ -134,7 +133,7 @@
           <div class="form-group">
             {{ Form::label('supplier_id', 'Supplier / Validity Date', ['class'=>'col-lg-2 control-label']) }}
             <div class="col-lg-7">
-                {{ Form::select('supplier_id', Supplier::lists('name', 'id'), null, ['id' => 'supplier', 'class' => 'form-control']) }}
+                {{ Form::select('supplier_id', $suppliers, null, ['id' => 'supplier', 'class' => 'form-control']) }}
               <span class="pull-right">* Required</span>
               <span class="help-block">Supplier from which this quotation was received.</span>
                 {{ $errors->first('supplier', '<span class="label label-warning">:message</span>') }}
@@ -142,11 +141,13 @@
 
               <!-- validity date -->
               <div class="col-lg-3">
-                  {{ Form::input('date','valid_until', isset($quotation->valid_until) ? $quotation->valid_until->format('d-m-Y') : null, ['id'=>'valid_until','class'=>'form-control']) }}
+                  {{ Form::input('text','valid_until', isset($quotation->valid_until) ? $quotation->valid_until->format('d-m-Y') : null,
+                  ['id'=>'valid_until','class'=>'form-control datepicker', 'data-format'=>'dd-mm-yyyy', 'data-start-view'=>'1']) }}
                   <span class="pull-right">* Required</span>
                   <span class="help-block">Date for which this quotation is valid for.</span>
                   {{ $errors->first('valid_until', '<span class="label label-warning">:message</span>') }}
               </div>
+
           </div>
 
           @if ( isset($quotation) )
@@ -174,15 +175,15 @@
                 <div class="col-lg-7">
                   {{ Form::text('product_name', null, ['id'=>'product_name','class'=>'form-control input-append', 'placeholder'=>'Product Name']) }}
                    <span class="pull-right @brand-primary">* Required</span>
-                   <span class="help-block">Product name given from the supplier</span>
                     {{ $errors->first('product_name', '<span class="label label-warning">:message</span>') }}
+                   <span class="help-block">Product name given from the supplier</span>
                 </div>
 
               <!-- productCode -->
                 <div class="col-lg-3">
                   {{ Form::text('product_code', null, ['id'=>'product_code','class'=>'form-control','placeholder'=>'Product Code']) }}
-                  <span class="help-block">Supplier product code</span>
                     {{ $errors->first('product_code', '<span class="label label-warning">:message</span>') }}
+                    <span class="help-block">Supplier product code</span>
                 </div>
           </div>
 
@@ -192,14 +193,14 @@
             <div class="col-lg-10">
                 {{ Form::textarea('product_description', null, ['id'=>'product_description','class'=>'form-control','rows'=>4,'placeholder'=>'Product Description']) }}
               <span class="pull-right">* Required</span>
-              <span class="help-block">Product description, including any relevant product specs or attributes</span>
                 {{ $errors->first('product_description', '<span class="label label-warning">:message</span>') }}
+                <span class="help-block">Product description, including any relevant product specs or attributes</span>
             </div>
           </div>
       </div>
 
             <!-- attributes -->
-          <div id="product-attributes" class="well bs-component" style="display:none">
+          <div id="product-attributes" class="well bs-component" style="display:none;">
               <h4>Product Attributes <span class="label label-warning">Required</span></h4><br/>
           </div>
 
@@ -237,7 +238,7 @@
                    {{ Form::text('packaging', null, ['id'=>'packaging','class'=>'form-control','placeholder'=>'Packaging']) }}
                    <span class="pull-right">* Required</span>
                   <span class="help-block">Inner pack type/quantity</span>
-                    {{ $errors->first('packaging', '<span class="label label-warning">:message</span>') }}
+                    {{ $errors->first('packaging', '<span class="label label-danger">:message</span>') }}
                 </div>
               <!-- pack price-->
                 <div class="col-lg-5">
@@ -274,7 +275,7 @@
             <div class="form-group">
                 {{ Form::label('status', 'Status', ['class'=>'col-lg-2 control-label']) }}
                 <div class="col-lg-5">
-                    {{ Form::select('status', Quotation::statuses(), null, ['id' => 'status', 'class' => 'form-control']) }}
+                    {{ Form::select('status', $statuses, null, ['id' => 'status', 'class' => 'form-control']) }}
                     <span class="pull-right">* Required</span>
                     <span class="help-block">Status of this quotation</span>
                     {{ $errors->first('status', '<span class="label label-warning">:message</span>') }}
@@ -300,6 +301,6 @@
             <!-- end form -->
         </fieldset>
 
-    <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div>
+<!--    <div style="display: none;" id="source-button" class="btn btn-primary btn-xs">&lt; &gt;</div>-->
 
 

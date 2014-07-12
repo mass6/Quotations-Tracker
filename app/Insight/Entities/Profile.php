@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 
 use Codesleeve\Stapler\ORM\StaplerableInterface;
 use Codesleeve\Stapler\ORM\EloquentTrait;
@@ -43,6 +43,6 @@ class Profile extends \BaseModel implements StaplerableInterface
 
     public function user()
     {
-        return $this->belongsTo('User');
+        return $this->belongsTo('Insight\Entities\User');
     }
 }

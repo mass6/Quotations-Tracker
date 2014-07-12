@@ -1,5 +1,5 @@
 <?php
-
+use Insight\Entities\ItemRequest;
 /**
  *
  */

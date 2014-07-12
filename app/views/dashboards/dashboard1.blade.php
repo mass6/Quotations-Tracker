@@ -9,7 +9,8 @@
 
         <div class="tile-stats tile-red">
             <div class="icon"><i class="entypo-basket"></i></div>
-            <div class="num" data-start="0" data-end="83" data-postfix="" data-duration="1500" data-delay="0">0</div>
+            <div id="orders-today-count" class="num" data-start="0" data-end="500" data-postfix="" data-duration="1500" data-delay="0">0</div>
+            <div id="orders-today-value" class="num" data-start="0" data-end="100000" data-postfix="" data-duration="1500" data-delay="0">0</div>
 
             <h3>Orders Today</h3>
             <p>placed so far today on our portal.</p>
@@ -58,6 +59,13 @@
 <script type="text/javascript">
     jQuery(document).ready(function($)
     {
+        // Dashboard Panels
+        document.getElementById('orders-today-count').innerHTML = insight.ordersTodayCount;
+        document.getElementById('orders-today-value').innerHTML = "AED " + insight.ordersTodayValue;
+
+
+
+
         // Sample Toastr Notification
         setTimeout(function()
         {

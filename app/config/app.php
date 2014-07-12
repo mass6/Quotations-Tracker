@@ -123,6 +123,7 @@ return array(
         'Codesleeve\LaravelStapler\LaravelStaplerServiceProvider',
         'Way\Generators\GeneratorsServiceProvider',
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+        'Laracasts\Utilities\UtilitiesServiceProvider',
 
 	),
 

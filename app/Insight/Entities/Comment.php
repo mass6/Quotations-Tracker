@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 /**
  * Created by PhpStorm.
  * User: sam
@@ -45,7 +45,7 @@ class Comment extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo('User');
+        return $this->belongsTo('Insight\Entities\User');
     }
 
 

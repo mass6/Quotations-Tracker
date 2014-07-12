@@ -1,9 +1,10 @@
-<?php
+<?php namespace Insight\Entities;
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 use Codesleeve\Stapler\ORM\StaplerableInterface;
 use Codesleeve\Stapler\ORM\EloquentTrait;
+use Eloquent;
 
 
 class User extends Eloquent implements UserInterface, RemindableInterface, StaplerableInterface
@@ -132,7 +133,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
      */
     public function profile()
     {
-        return $this->hasOne('Profile');
+        return $this->hasOne('Insight\Entities\Profile');
     }
 
     /**
@@ -142,7 +143,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
      */
     public function createdRequests()
     {
-        return $this->hasMany('ItemRequest', 'created_by');
+        return $this->hasMany('Insight\Entities\ItemRequest', 'created_by');
     }
 
     /**
@@ -152,7 +153,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
      */
     public function assignedRequests()
     {
-        return $this->hasMany('ItemRequest', 'assigned_to');
+        return $this->hasMany('Insight\Entities\ItemRequest', 'assigned_to');
     }
 
 
@@ -163,7 +164,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
 
     public function comments()
     {
-        return $this->hasMany('Comment');
+        return $this->hasMany('Insight\Entities\Comment');
     }
 
 }

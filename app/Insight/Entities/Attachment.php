@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 /**
  * Created by PhpStorm.
  * User: sam

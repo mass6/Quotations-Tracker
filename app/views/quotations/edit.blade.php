@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('links')
+<link rel="stylesheet" href="{{ URL::asset('js/dropzone/dropzone.css') }}">
+@stop
+
 @section('content')
 <div class="container">
     <h3>Edit Quotation: <span>{{ $quotation->product_name }}</span></h3>
@@ -27,7 +31,7 @@
                         <h4>Link to Item Requests</h4>
                         <div class="form-group">
                             {{ Form::open(array('route' => array('attach-request', $quotation->id), 'method'=>'PATCH')) }}
-                            {{ Form::select('item-request-attach', ItemRequest::lists('name', 'id'), null , ['class'=>'form-control'] ) }}<br/>
+                            {{ Form::select('item-request-attach', $item_requests_list, null , ['class'=>'form-control'] ) }}<br/>
                             {{ Form::submit('Attach Request', ['class'=>'btn btn-primary btn-sm']) }}
                             {{ Form::close() }}
                         </div>
@@ -48,4 +52,9 @@
 
 
 
+@stop
+
+@section('bottomlinks')
+<script src="{{ URL::asset('js/bootstrap-datepicker.js') }}"></script>
+<!--<script src="{{ URL::asset('js/dropzone/dropzone.js') }}"></script>-->
 @stop

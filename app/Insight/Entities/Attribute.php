@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 
 class Attribute extends BaseModel
 

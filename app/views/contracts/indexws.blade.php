@@ -5,6 +5,8 @@
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('js/datatables/css/jquery.dataTables.css') }}">
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css">
 <style>
+    table.users, table.addresses {border:1px solid #dddddd;}
+    .users td, .addresses td {border:1px solid #dddddd;}
     td.details-control1, td.details-control2 {
         background: url('{{ URL::asset("js/datatables/resources/details_open.png") }}') no-repeat center center;
         cursor: pointer;
@@ -13,81 +15,73 @@
         background: url('{{ URL::asset("js/datatables/resources/details_close.png") }}') no-repeat center center;
     }
     tr.row-header {background-color: #DDDDDD !important;}
+
     td.column-header {width: 100% !important;}
 
+    .users tr {border-bottom: 1px solid #ddd;}
+
+
 </style>
+<script>
+    var reportname = "<?php echo $reportName; ?>";
+</script>
 
 <script class="init" type="text/javascript">
 
     /* Formatting function for row details - modify as you need */
     function format ( d ) {
         // `d` is the original data object for the row
-        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        return '<table class="users" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr class="row-header">'+
                 '<td class="column-header" colspan="11">Assigned Users</td>'+
             '</tr>'+
-            '<tr>'+
+            '<tr">'+
                 '<td>User 1:</td>'+
                 '<td>'+d.user1+'</td>'+
-                '<td>|</td>'+
                 '<td>User 6:</td>'+
                 '<td>'+d.user6+'</td>'+
-                '<td>|</td>'+
                 '<td>User 11:</td>'+
                 '<td>'+d.user11+'</td>'+
-                '<td>|</td>'+
                 '<td>User 16:</td>'+
                 '<td>'+d.user16+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td>User 2:</td>'+
                 '<td>'+d.user2+'</td>'+
-                '<td>|</td>'+
                 '<td>User 7:</td>'+
                 '<td>'+d.user7+'</td>'+
-                '<td>|</td>'+
                 '<td>User 12:</td>'+
                 '<td>'+d.user12+'</td>'+
-                '<td>|</td>'+
                 '<td>User 17:</td>'+
                 '<td>'+d.user17+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td>User 3:</td>'+
                 '<td>'+d.user3+'</td>'+
-                '<td>|</td>'+
                 '<td>User 8:</td>'+
                 '<td>'+d.user8+'</td>'+
-                '<td>|</td>'+
                 '<td>User 13:</td>'+
                 '<td>'+d.user13+'</td>'+
-                '<td>|</td>'+
                 '<td>User 18:</td>'+
                 '<td>'+d.user18+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td>User 4:</td>'+
                 '<td>'+d.user4+'</td>'+
-                '<td>|</td>'+
                 '<td>User 9:</td>'+
                 '<td>'+d.user9+'</td>'+
-                '<td>|</td>'+
                 '<td>User 14:</td>'+
                 '<td>'+d.user14+'</td>'+
-                '<td>|</td>'+
                 '<td>User 19:</td>'+
                 '<td>'+d.user19+'</td>'+
             '</tr>'+
             '<tr>'+
                 '<td>User 5:</td>'+
                 '<td>'+d.user5+'</td>'+
-                '<td>|</td>'+
                 '<td>User 10:</td>'+
                 '<td>'+d.user10+'</td>'+
-                '<td>|</td>'+
                 '<td>User 15:</td>'+
                 '<td>'+d.user15+'</td>'+
-                '<td>|</td>'+
                 '<td>User 20:</td>'+
                 '<td>'+d.user20+'</td>'+
             '</tr>'+
@@ -97,7 +91,7 @@
     /* Formatting function for row details - modify as you need */
     function format2 ( d ) {
         // `d` is the original data object for the row
-        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        return '<table class="addresses"  cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr class="row-header">'+
                 '<td class="column-header" colspan="11">Shipping Addresses</td>'+
             '</tr>'+
@@ -161,7 +155,19 @@
 
     $(document).ready(function() {
         var table = $('#datatable').DataTable({
-            "ajax": "/data/temp/" + "<?php echo $reportName; ?>",
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url" : "http://basepackage.v2.dev/insight/service2.php",
+                "type": "POST",
+                "dataSrc": "",
+                "data": function ( d ) {
+                    return $.extend( {}, d, {
+                        "key": "sc121212",
+                        "queryType" : "contracts"
+                    });
+                }
+            },
             "deferRender": true,
             "columns": [
                 {
@@ -181,7 +187,8 @@
                 { "data": "cname" },
                 { "data": "customer" },
                 { "data": "store" },
-                { "data": "update_time" }
+                { "data": "update_time" },
+                { "data": "website", "visible": false}
             ],
             "order": [[2, 'asc']],
             "sPaginationType": "bootstrap",
@@ -194,17 +201,17 @@
                     {
                         "sExtends": "pdf",
                         "sFileName": "contracts.pdf",
-                        "mColumns": [ 1,2,3,4,5,6 ]
+                        "mColumns": [ 2,3,4,5,6 ]
                     },
                     {
                         "sExtends": "csv",
                         "sFileName": "contracts.csv",
-                        "mColumns": [ 1,2,3,4,5,6 ]
+                        "mColumns": "all"
                     },
                     {
                         "sExtends": "xls",
                         "sFileName": "contracts.xls",
-                        "mColumns": [ 1,2,3,4,5,6 ]
+                        "mColumns": [ 2,3,4,5,6 ]
                     }
                 ]
             }
@@ -256,7 +263,7 @@
 
 
 
-        <h2>{{ isset($heading) ? $heading : 'Contracts' }}</h2>
+        <h2>{{ isset($heading) ? $heading : 'Contracts!!!' }}</h2>
 
 
     <table id="datatable" class="table table-bordered datatable">
@@ -270,13 +277,15 @@
             <th>Customer</th>
             <th>Store</th>
             <th>Last Updated</th>
+            <th>Website</th>
         </tr>
         </thead>
 
     </table>
 
 
-
+   {{ Form::open() }}
+   {{ Form::close() }}
 
 
 @include('layouts.partials.scripts._datatables')

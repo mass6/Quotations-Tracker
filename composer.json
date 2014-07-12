@@ -6,7 +6,9 @@
 	"require": {
 		"laravel/framework": "4.1.*",
 		"cartalyst/sentry": "2.1.*",
-        "codesleeve/laravel-stapler": "dev-master"
+        "codesleeve/laravel-stapler": "dev-master",
+        "aws/aws-sdk-php": "2.4.*@dev",
+        "laracasts/utilities": "~1.0"
 	},
     "require-dev": {
         "way/generators": "2.*",
@@ -25,7 +27,8 @@
 			"app/helpers.php"
 		],
         "psr-4": {
-            "Acme\\": "App/Acme"
+            "Acme\\": "App/Acme",
+            "Insight\\": "App/Insight"
         }
 	},
 	"scripts": {

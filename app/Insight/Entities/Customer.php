@@ -1,4 +1,5 @@
-<?php
+<?php namespace Insight\Entities;
+use Insight\Entities\ItemRequest;
 
 class Customer extends BaseModel
 
@@ -42,7 +43,7 @@ class Customer extends BaseModel
      */
     public function itemRequests()
     {
-        return $this->hasMany('ItemRequest');
+        return $this->hasMany('Insight\Entities\ItemRequest');
     }
 
 

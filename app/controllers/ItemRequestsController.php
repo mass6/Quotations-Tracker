@@ -1,5 +1,13 @@
 <?php
 
+use Insight\Entities\ItemRequest;
+use Insight\Entities\Quotation;
+use Insight\Entities\Customer;
+use Insight\Entities\Category;
+use Insight\Entities\Attribute;
+use Insight\Entities\Attachment;
+use Insight\Entities\User;
+
 class ItemRequestsController extends \BaseController {
 
 
@@ -20,7 +28,11 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function index()
 	{
-        $item_requests = ItemRequest::all();
+        $item_requests = ItemRequest::with('customer')
+            ->with('category')
+            ->with('assignedTo')
+            ->with('validQuotations')
+            ->get();
 		return View::make('item_requests.index', compact('item_requests'));
 	}
 
@@ -37,8 +49,9 @@ class ItemRequestsController extends \BaseController {
         $categoriesList = Category::orderBy('id')->lists('name', 'id');
         $attributesList = Attribute::lists('name', 'id');
         $usersList = User::lists('first_name', 'id');
+        $statuses = ItemRequest::statuses();
 
-		return View::make('item_requests.create', compact('customersList', 'categoriesList', 'attributesList', 'usersList'));
+		return View::make('item_requests.create', compact('customersList', 'categoriesList', 'attributesList', 'usersList', 'statuses'));
 	}
 
 
@@ -123,7 +136,9 @@ class ItemRequestsController extends \BaseController {
 
         $item_request = ItemRequest::find($id);
         $user = User::find(Sentry::getUser()->id);
-        if ($item_request->createdBy != $user )
+//        return $item_request->createdBy->id;
+//        return $user->id;
+        if ($item_request->createdBy->id !== $user->id )
         {
             return Redirect::back()->with('flash_message', "Sorry, you may only edit Item Requests which you have created.");
         }
@@ -141,10 +156,10 @@ class ItemRequestsController extends \BaseController {
         {
             $attributes = null;
         }
-
+        $statuses = ItemRequest::statuses();
        //$attributes = array('material','type','bics');
 
-        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributes', 'usersList'));
+        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributes', 'usersList', 'statuses'));
 
 	}
 

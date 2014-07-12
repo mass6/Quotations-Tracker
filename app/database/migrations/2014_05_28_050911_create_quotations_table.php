@@ -19,7 +19,6 @@ class CreateQuotationsTable extends Migration {
 			$table->increments('id');
 			$table->enum('status', array('draft', 'submitted', 'valid', 'expired'));
 			$table->integer('created_by');
-			$table->integer('item_request');
 			$table->string('product_name');
 			$table->string('product_code')->nullable();
 			$table->integer('supplier_id');

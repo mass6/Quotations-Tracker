@@ -25,6 +25,7 @@
     {{ Form::textarea('description', null, ['class' => 'form-control', 'rows'=>'5', 'id' => 'description']) }}
     {{ $errors->first('description', '<span class="label label-warning">:message</span>') }}
 </div>
+
 @if ( isset($item_request) )
 <div class="form-group">
     {{ Form::label('attachments', 'Attachments') }}
@@ -84,7 +85,7 @@
 </div>
 <div class="form-group">
     {{ Form::label('status', 'Status:') }}
-    {{ Form::select('status', ItemRequest::statuses(), null, ['class'=>'form-control', 'id'=>'status'] ) }}
+    {{ Form::select('status', $statuses, null, ['class'=>'form-control', 'id'=>'status'] ) }}
     {{ $errors->first('status', '<span class="label label-warning">:message</span>') }}
 </div>
 <div class="form-group">
@@ -97,13 +98,13 @@
     {{ Form::textarea('notes', null, ['class' => 'form-control', 'rows'=>'5', 'id' => 'notes']) }}
     {{ $errors->first('notes', '<span class="label label-warning">:message</span>') }}
 </div>
-<div class="form-group pull-left">
+<div class="form-group pull-left margin-top-200">
     {{ Form::submit( $submit, ['class' => 'btn btn-primary']) }} {{ link_to_route('item-requests.index', 'Cancel', null, array('class'=>'btn btn-warning')) }}
     {{ Form::close() }}
 </div>
 
 @if ( isset($item_request) )
-<div class="form-group pull-right"
+<div class="form-group pull-right margin-top-200"
         {{ Form::open(array('method' => 'DELETE', 'route' => array('item-requests.destroy', $item_request->id), 'class'=>'form-inline')) }}
         {{ Form::submit('Delete', array('class' => 'btn btn-danger pull-right')) }}
         {{ Form::close() }}
@@ -113,9 +114,13 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
-        var attributesObj = JSON.parse('<?php echo isset($attributes) ? json_encode($attributes) : null; ?>');
-        if (attributesObj != null){
+        <?php if (isset($attributes)){ ?>
+            var attributesObj = JSON.parse('<?php echo json_encode($attributes); ?>')
+        <?php } else { ?>
+        var attributesObj = 'd';
+        <?php } ?>
+        console.log(attributesObj)
+        if (attributesObj !== 'd'){
             setAttributes(attributesObj);
         }
     });
@@ -127,7 +132,6 @@
     var limit = 10; // max amount of attributes allowed
 
     function showAttributes(attributes)
-
     {
         var div = document.getElementById('assigned-attributes');
         var bttn = document.getElementById('assignattributes');

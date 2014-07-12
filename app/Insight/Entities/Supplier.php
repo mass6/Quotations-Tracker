@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 
 class Supplier extends BaseModel
 
@@ -42,7 +42,7 @@ class Supplier extends BaseModel
      */
     public function quotations()
     {
-        return $this->hasMany('quotations');
+        return $this->hasMany('Insight\Entities\quotations');
     }
 
 

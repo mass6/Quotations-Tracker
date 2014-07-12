@@ -15,13 +15,16 @@ function getUserList()
 	return User::lists('username', 'id');
 }
 
-function isActive($link, $seg = 1)
+function isActive($link, $seg = 1, $parent = false)
 {
+    $class = '';
 	$segment = Request::segment($seg);
-	if ($segment == $link)
-		{
-			return 'active';
-		}
+	if ($segment == $link){
+        if ($parent == true){
+            return 'opened active';
+        }
+        else return 'active';
+    }
 		return '';
 }
 
@@ -154,6 +157,22 @@ function jsonToArray($jsonArray)
  * @return array
  */
 function object_to_array($data)
+{
+    if(is_array($data) || is_object($data))
+    {
+        $result = array();
+
+        foreach($data as $key => $value) {
+            $result[$key] = object_to_array($value);
+        }
+
+        return $result;
+    }
+
+    return $data;
+}
+
+function object_to_simple_array($data)
 {
     if(is_array($data) || is_object($data))
     {

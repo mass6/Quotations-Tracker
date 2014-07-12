@@ -1,4 +1,4 @@
-<?php
+<?php namespace Insight\Entities;
 /**
  * Created by PhpStorm.
  * User: sam
@@ -6,6 +6,7 @@
  * Time: 3:47 PM
  */
 
+use Carbon\Carbon;
 
 class Quotation extends BaseModel
 {
@@ -66,7 +67,11 @@ class Quotation extends BaseModel
         static::$rules = static::$validationRules;
     }
 
-
+    public function setValidUntilAttribute($date)
+    {
+        if ($date)
+            $this->attributes['valid_until'] = Carbon::createFromFormat('d-m-Y', $date);
+    }
 
     /**
      * Relation definition to Supplier
@@ -75,7 +80,7 @@ class Quotation extends BaseModel
      */
     public function supplier()
     {
-        return $this->belongsTo('supplier');
+        return $this->belongsTo('Insight\Entities\supplier');
     }
 
     /**
@@ -85,7 +90,7 @@ class Quotation extends BaseModel
      */
     public function itemRequests()
     {
-        return $this->belongsToMany('ItemRequest')->withTimestamps();
+        return $this->belongsToMany('Insight\Entities\ItemRequest')->withTimestamps();
     }
 
     /**
@@ -95,7 +100,7 @@ class Quotation extends BaseModel
      */
     public function createdBy()
     {
-        return $this->belongsTo('User', 'created_by');
+        return $this->belongsTo('Insight\Entities\User', 'created_by');
     }
 
     /**
@@ -105,7 +110,7 @@ class Quotation extends BaseModel
      */
     public function attachments()
     {
-        return $this->morphMany('Attachment', 'attachable');
+        return $this->morphMany('Insight\Entities\Attachment', 'attachable');
     }
 
     /**
@@ -115,7 +120,7 @@ class Quotation extends BaseModel
      */
     public function comments()
     {
-        return $this->morphMany('Comment', 'commentable');
+        return $this->morphMany('Insight\Entities\Comment', 'commentable');
     }
 
     /**
