@@ -1,4 +1,4 @@
-<?php  namespace Insight\Repositories; /**
+<?php  namespace Insight\Repositories; /***
  * Created by:
  * User: sam
  * Date: 7/7/14
