@@ -121,6 +121,9 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Cartalyst\Sentry\SentryServiceProvider',
         'Codesleeve\LaravelStapler\LaravelStaplerServiceProvider',
+        'Way\Generators\GeneratorsServiceProvider',
+        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+        'Laracasts\Utilities\UtilitiesServiceProvider',
 
 	),
 

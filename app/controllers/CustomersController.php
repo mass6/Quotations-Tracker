@@ -1,5 +1,7 @@
 <?php
 
+use Insight\Entities\Customer;
+
 class CustomersController extends \BaseController {
 
     /**

@@ -1,4 +1,5 @@
 <?php
+use Insight\Entities\Attribute;
 
 class AttributesController extends \BaseController {
 

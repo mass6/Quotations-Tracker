@@ -37,17 +37,21 @@ class UsersController extends \BaseController {
 	{
 
 		$input = Input::all();
-
+        User::$rules['password'] = 'required|confirmed';
 		$validation = Validator::make($input, User::$rules);
+        Log::info('test');
 		if ($validation->passes())
 		{
-		   Sentry::createUser(array(
+		   $user = Sentry::createUser(array(
 		   		'first_name'	=> $input['first_name'],
 		   		'last_name'		=> $input['last_name'],
 		   		'email'			=> $input['email'],
 		   		'password'	    => $input['password'],
 		   		'activated'		=> true,
 		   	));
+
+           Profile::create(['user_id' => $user->id]);
+
 		   return Redirect::route('admin.users.index')
 		   		->with('flash_message', 'User was successfully added')
 		   		->with('success', true);
@@ -94,8 +98,6 @@ class UsersController extends \BaseController {
 	 */
 	public function update($id)
 	{
-
-
         $user = User::find($id);
         $input = Input::all();
 
@@ -105,6 +107,7 @@ class UsersController extends \BaseController {
             $user->email = $input['email'];
             $user->first_name = $input['first_name'];
             $user->last_name = $input['last_name'];
+            $user->avatar = $input['avatar'];
 
             // check if password was updated
             if ($input['password'] && $input['password_confirmation'])
@@ -126,7 +129,7 @@ class UsersController extends \BaseController {
 			return Redirect::route('admin.users.index')
 		   		->with('flash_message', 'User successfully updated.')
 		   		->with('success', true);
-			
+
 		}
 
 		return Redirect::route('admin.users.edit', $id)

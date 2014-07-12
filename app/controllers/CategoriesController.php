@@ -1,5 +1,7 @@
 <?php
 
+use Insight\Entities\Category;
+
 class CategoriesController extends \BaseController {
 
 	/**

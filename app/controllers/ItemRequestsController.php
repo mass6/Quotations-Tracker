@@ -1,6 +1,25 @@
 <?php
 
+use Insight\Entities\ItemRequest;
+use Insight\Entities\Quotation;
+use Insight\Entities\Customer;
+use Insight\Entities\Category;
+use Insight\Entities\Attribute;
+use Insight\Entities\Attachment;
+use Insight\Entities\User;
+
 class ItemRequestsController extends \BaseController {
+
+
+    public function subscribe($events)
+    {
+        $events->listen('quotation.update', 'ItemRequestsController@logUpdate');
+    }
+
+    public function logUpdate($event)
+    {
+        Log::info('Quotation No.' . $event->id . ' has been updated. Note from Item Request Controller');
+    }
 
 	/**
 	 * Display a listing of the resource.
@@ -9,7 +28,11 @@ class ItemRequestsController extends \BaseController {
 	 */
 	public function index()
 	{
-        $item_requests = ItemRequest::all();
+        $item_requests = ItemRequest::with('customer')
+            ->with('category')
+            ->with('assignedTo')
+            ->with('validQuotations')
+            ->get();
 		return View::make('item_requests.index', compact('item_requests'));
 	}
 
@@ -26,8 +49,9 @@ class ItemRequestsController extends \BaseController {
         $categoriesList = Category::orderBy('id')->lists('name', 'id');
         $attributesList = Attribute::lists('name', 'id');
         $usersList = User::lists('first_name', 'id');
+        $statuses = ItemRequest::statuses();
 
-		return View::make('item_requests.create', compact('customersList', 'categoriesList', 'attributesList', 'usersList'));
+		return View::make('item_requests.create', compact('customersList', 'categoriesList', 'attributesList', 'usersList', 'statuses'));
 	}
 
 
@@ -112,7 +136,9 @@ class ItemRequestsController extends \BaseController {
 
         $item_request = ItemRequest::find($id);
         $user = User::find(Sentry::getUser()->id);
-        if ($item_request->createdBy != $user )
+//        return $item_request->createdBy->id;
+//        return $user->id;
+        if ($item_request->createdBy->id !== $user->id )
         {
             return Redirect::back()->with('flash_message', "Sorry, you may only edit Item Requests which you have created.");
         }
@@ -130,10 +156,10 @@ class ItemRequestsController extends \BaseController {
         {
             $attributes = null;
         }
-
+        $statuses = ItemRequest::statuses();
        //$attributes = array('material','type','bics');
 
-        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributes', 'usersList'));
+        return View::make('item_requests.edit', compact('item_request','customersList', 'categoriesList', 'attributes', 'usersList', 'statuses'));
 
 	}
 
@@ -193,73 +219,15 @@ class ItemRequestsController extends \BaseController {
 		return Redirect::route('item-requests.index');
 	}
 
-    public function object_to_array($data)
+    public function attachQuotation($id, $quotation)
     {
-        if(is_array($data) || is_object($data))
-        {
-            $result = array();
-
-            foreach($data as $key => $value) {
-                $result[$key] = $this->object_to_array($value);
-            }
-
-            return $result;
-        }
-
-        return $data;
+        Quotation::find($quotation)->itemRequests()->attach($id);
+        return Redirect::back()
+            ->with('flash_message', 'Quotation successfully linked to Item Request.')
+            ->with('success', true);
     }
 
-    /**
-     * Checks the assigned attributes as stored in teh database against the current
-     * active set of attributes. Returns an array containing only the assigned attributes
-     * which are still active.
-     *
-     * @param $attributeArray
-     * @return array
-     */
-    protected function getAssignedAttributes($attributeArray)
-    {
-        $availableAttributes = Attribute::all(); // current attributes defined in system
 
-        // initialize variables for storing teh attribute arrays
-        $attributeIds = array();  // array of attribute id's
-        $assignedAttributes = array(); // resulting array of current attributes to be assigned
-
-        // loop through each attribute and store id in array
-        foreach ($availableAttributes as $attribute)
-        {
-            $attributeIds[] = $attribute['id'];
-        }
-
-        if (isset($attributeArray))
-        {
-            $i = 0; // counter for serializing the resulting assigned array
-            foreach ($attributeArray as $attribute)
-            {
-                // Does the current stored attribute still exist in the current
-                // list of available attributes?
-                if (in_array($attribute[0],$attributeIds))
-                {
-                    // assign attribute id to index 0
-                    $assignedAttributes[$i][0] = (int) $attribute[0];
-
-                    // check if attribute is required and assign result to index #1
-                    if (in_array("required",$attribute))
-                    {
-                        $assignedAttributes[$i][1] = "required";
-                    }
-                    else
-                    {
-                        $assignedAttributes[$i][1] = "optional";
-                    }
-                    $i++;
-                }
-            }
-        }
-
-        return $assignedAttributes;
-
-    }
 
 
 }

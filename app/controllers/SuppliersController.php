@@ -1,5 +1,9 @@
 <?php
 
+use Insight\Entities\Supplier;
+use Insight\Entities\User;
+
+
 class SuppliersController extends \BaseController {
 
     /**

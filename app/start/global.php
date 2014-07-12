@@ -46,9 +46,20 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 |
 */
 
+//App::error(function(Exception $exception, $code)
+//{
+//	Log::error($exception);
+//});
+
+// Function overridden to log the missing URI
 App::error(function(Exception $exception, $code)
 {
-	Log::error($exception);
+    if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
+    {
+        Log::error('NotFoundHttpException Route: ' . Request::url() );
+    }
+
+    Log::error($exception);
 });
 
 /*
@@ -79,3 +90,6 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+App::bind('Acme\Repositories\MyInterface', 'Acme\Repositories\DbQuote');
+

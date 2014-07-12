@@ -1,48 +1,22 @@
-@extends('layouts.default')
+@extends('layouts.main')
+
+@section('links')
+<link rel="stylesheet" href="{{ URL::asset('js/dropzone/dropzone.css') }}">
+@stop
 
 @section('content')
 <div class="container">
     <h1>New Quotation</h1>
-    <hr/>
-    {{ Form::open( array(
-    'route' => 'quotations.select',
-    'method' => 'post',
-    'id' => 'form-select-request',
-    'class' => 'form-container'
-    ) ) }}
+    <legend>Complete the fields below to add a new quotation</legend>
 
-    <fieldset>
-    <div id="div_item_request_select" class="well bs-component form-group col-lg-10">
-        <div class="col-lg-10">
-            {{ Form::label( 'item_request_select', 'Item Request:', ['class' => 'control-label'] ) }}
-        </div>
-
-        <div class="col-lg-7">
-            {{ Form::select( 'item_request_select', $itemRequests,null, array(
-            'id' => 'item_request_select',
-            'required' => true,
-            'class' => 'form-control'
-            ) ) }}
-            <span id="selecthelper" class="help-block">Select an item request to attach the new quotation to</span>
-        </div>
-
-        <div class="col-lg-3">
-            {{ Form::submit( 'New Quotation', array(
-            'id' => 'btn-add-quotation',
-            'class' => 'btn btn-primary'
-            ) ) }}
-        </div>
-    </div>
-    </fieldset>
-    {{ Form::close() }}
-
-    <div class="row" id="form-container" style="display:none;">
+    <div class="row" id="form-container">
         <div class="col-lg-10">
             <div class="well bs-component">
 
                 {{ Form::open(array('route'=>'quotations.store', 'class'=>'form-horizontal', 'role'=>'form', 'files'=>true)) }}
+                {{ Form::hidden('item_request', null, ['id'=>'item_request']) }}
                 <?php $submit = 'Create Quotation' ?>
-                @include('quotations.partials._form')
+                @include('quotations.partials._formFields')
 
             </div>
         </div>
@@ -50,6 +24,10 @@
 
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('js/quotations/select.js') }}"></script>
+<!--<script type="text/javascript" src="{{ URL::asset('js/quotations/select.js') }}"></script>-->
 
+@stop
+
+@section('bottomlinks')
+<script src="{{ URL::asset('js/bootstrap-datepicker.js') }}"></script>
 @stop
