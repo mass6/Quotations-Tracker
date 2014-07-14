@@ -26,30 +26,6 @@ class UsersTableSeeder extends Seeder
             'activated' 	=> true,
         ));
 
-        $users[] = Sentry::createUser(array(
-            'email'			=>	'hayley@test.com',
-            'first_name'	=>	'Hayley',
-            'last_name'		=>	'Farmer',
-            'password'		=>	'1234',
-            'activated' 	=> 	true,
-        ));
-
-        $users[] = Sentry::createUser(array(
-            'email'			=>	'jess@test.com',
-            'first_name'	=>	'Jess',
-            'last_name'		=>	'Richards',
-            'password'		=>	'1234',
-            'activated' 	=> 	true,
-        ));
-
-        $users[] = Sentry::createUser(array(
-            'email'			=>	'wasim@test.com',
-            'first_name'	=>	'Wasim',
-            'last_name'		=>	'Almasri',
-            'password'		=>	'1234',
-            'activated' 	=> 	true,
-        ));
-
         // Assign users to groups
 
         // Find the group using the group id

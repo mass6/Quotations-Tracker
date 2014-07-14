@@ -1,9 +1,10 @@
 <?php namespace Insight\Entities;
 
+use Insight\Entities;
 use Codesleeve\Stapler\ORM\StaplerableInterface;
 use Codesleeve\Stapler\ORM\EloquentTrait;
 
-class Profile extends \BaseModel implements StaplerableInterface
+class Profile extends BaseModel implements StaplerableInterface
 {
 
     use EloquentTrait;

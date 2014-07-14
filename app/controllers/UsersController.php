@@ -1,4 +1,6 @@
 <?php
+use Insight\Entities\User;
+use Insight\Entities\Profile;
 
 class UsersController extends \BaseController {
 

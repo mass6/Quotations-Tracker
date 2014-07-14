@@ -15,42 +15,42 @@
 //dd($date->format('d-m-Y'));
 
 
-DB::listen(function($sql){
-    //var_dump($sql);
-});
+//DB::listen(function($sql){
+//    //var_dump($sql);
+//});
 
 Route::get('/ajaxreport/contracts', 'AjaxController@getContracts');
 
-Route::get('/contracts/rebuild', 'PortalController@rebuildContractsIndex');
-Route::get('/users/rebuild', 'PortalController@rebuildUsersIndex');
+//Route::get('/contracts/rebuild', 'PortalController@rebuildContractsIndex');
+//Route::get('/users/rebuild', 'PortalController@rebuildUsersIndex');
 
 
 App::bind('SneadInterface', 'Snead');
 
 // Test routes
-Route::get('/testpage', function(){
-    return View::make('testpage');
-});
-Route::get('zap', function(){
-    $user = Sentry::findUserById(1);
-    $resetCode = $user->getResetPasswordCode();
-
-    // Update the user
-    if ($user->save())
-
-    if ($user->attemptResetPassword($resetCode, 'sc121212'))
-    {
-        return Redirect::to('login')->with('flash_message', 'Password updated!')->with('success', true);
-    }
-    else
-    {
-        return Redirect::back()->with('flash_message', 'Password not saved! Please try again.');
-    }
-
-});
-
-Route::get('/reports' , 'HomeController@getReport');
-Route::get('/service' , 'HomeController@testService');
+//Route::get('/testpage', function(){
+//    return View::make('testpage');
+//});
+//Route::get('zap', function(){
+//    $user = Sentry::findUserById(1);
+//    $resetCode = $user->getResetPasswordCode();
+//
+//    // Update the user
+//    if ($user->save())
+//
+//    if ($user->attemptResetPassword($resetCode, 'sc121212'))
+//    {
+//        return Redirect::to('login')->with('flash_message', 'Password updated!')->with('success', true);
+//    }
+//    else
+//    {
+//        return Redirect::back()->with('flash_message', 'Password not saved! Please try again.');
+//    }
+//
+//});
+//
+//Route::get('/reports' , 'HomeController@getReport');
+//Route::get('/service' , 'HomeController@testService');
 
 /*****************************************************
  *
