@@ -184,20 +184,20 @@ class PortalController extends \BaseController {
         return View::make('portal.orders.index', compact('reportName', 'heading'));
     }
 
-    public function getOrderDetails($id)
+    public function getOrderDetails($id, $customerGroup = 'emrill')
     {
-        $order = Portal::getReport('orderDetails', 'array', 'search', '', $id)[0];
-        $items = Portal::getReport('orderItemDetails', 'array', 'search', '', $id);
+         $order = Portal::getReport('orderDetails', 'array', 'search', $customerGroup, $id)[0];
+        $items = Portal::getReport('orderItemDetails', 'array', 'search', $customerGroup, $id);
         return View::make('portal.orders.show', compact('order', 'items'));
     }
 
-    public function searchOrders()
+    public function searchOrders($customerGroup = 'emrill')
     {
         $results = null;
         $q = Input::has('q') ? Input::get('q') : null;
         if ($q){
             Log::info(Input::get('q'));
-            $results = Portal::getReport('ordersSearch', 'array', 'search', Input::get('q'));
+            $results = Portal::getReport('ordersSearch', 'array', 'search', $customerGroup, Input::get('q'));
         }
         return View::make('portal.orders.search', compact('results', 'q'));
     }
