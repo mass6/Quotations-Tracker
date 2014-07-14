@@ -6,7 +6,7 @@
     <!-- logo -->
     <div class="logo">
         <a href="/">
-            <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />
+            <img src="{{ URL::asset('/images/insight-120.png') }}" alt="" />
         </a>
     </div>
 
