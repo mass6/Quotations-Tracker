@@ -1,4 +1,5 @@
 <?php
+use Insight\Entities\Profile;
 
 class ProfilesController extends \BaseController
 {
