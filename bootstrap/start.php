@@ -24,16 +24,19 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
-//$env = $app->detectEnvironment(function()
-//{
-//    return getenv('ENV') ?: 'local';
-//});
+$env = $app->detectEnvironment(function () {
+    if (file_exists(__DIR__ . '/../environment.php')) {
+        return include(__DIR__ . '/../environment.php');
+    } else {
+        return 'production';
+    }
+});
 
-$env = $app->detectEnvironment(array(
-
-    'local' => array('homestead'),
-
-));
+//$env = $app->detectEnvironment(array(
+//
+//    'local' => array('homestead'),
+//
+//));
 
 
 /*
