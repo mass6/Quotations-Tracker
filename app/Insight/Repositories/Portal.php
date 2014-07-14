@@ -10,7 +10,7 @@ class Portal
 
     //static protected $url = 'http://36s-portal.net/insight36/service.php';
     //static protected $url = 'http://basepackage.v2.dev/insight/service.php';
-    static protected $env = 'prod';
+    static protected $env = 'local';
 
 
     /**
@@ -19,12 +19,13 @@ class Portal
      * @param $query
      * @param string $format
      * @param string $type
+     * @param $group
      * @param null $search
      * @return array|mixed
      */
-    public static function getReport($query, $format = 'json', $type = 'query', $search = null)
+    public static function getReport($query, $format = 'json', $type = 'query', $group = 'emrill', $search = null)
     {
-        $data = array('key'=>sha1(getenv('WS_KEY')), 'queryName' => ucwords($query), 'queryType' => $type, 'search' => $search);
+        $data = array('key'=>sha1(getenv('WS_KEY')), 'queryName' => ucwords($query), 'queryType' => $type, 'group' => $group, 'search' => $search);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, self::getUrl());
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
