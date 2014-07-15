@@ -186,7 +186,7 @@ class PortalController extends \BaseController {
 
     public function getOrderDetails($id, $customerGroup = 'emrill')
     {
-         $order = Portal::getReport('orderDetails', 'array', 'search', $customerGroup, $id)[0];
+        $order = Portal::getReport('orderDetails', 'array', 'search', $customerGroup, $id)[0];
         $items = Portal::getReport('orderItemDetails', 'array', 'search', $customerGroup, $id);
         return View::make('portal.orders.show', compact('order', 'items'));
     }

@@ -15,7 +15,7 @@
 
 <div class="row">
     <div class="col-sm-3">
-
+        <a href="{{ route('portal.orders.period', 'today') }}">
         <div class="tile-stats tile-red">
             <div class="icon"><i class="entypo-basket"></i></div>
             <div id="orders-today-count" class="num" data-start="0" data-end="0" data-postfix="" data-duration="1500" data-delay="0">0</div>
@@ -24,11 +24,12 @@
             <h3>Orders Today</h3>
             <p>placed so far today on our portal.</p>
         </div>
+        </a>
 
     </div>
 
     <div class="col-sm-3">
-
+        <a href="{{ url('/') }}">
         <div class="tile-stats tile-green">
             <div class="icon"><i class="entypo-loop"></i></div>
             <div id="pending-approval-count" class="num" data-start="0" data-end="0" data-postfix="" data-duration="1500" data-delay="0">0</div>
@@ -37,11 +38,11 @@
             <h3>Pending Approval</h3>
             <p>waiting to be approved.</p>
         </div>
-
+        </a>
     </div>
 
     <div class="col-sm-3">
-
+        <a href="{{ route('portal.orders.period', 'this-month') }}">
         <div class="tile-stats tile-aqua">
             <div class="icon"><i class="entypo-chart-area"></i></div>
             <div id="monthly-order-count" class="num" data-start="0" data-end="23" data-postfix="" data-duration="1500" data-delay="1200">0</div>
@@ -50,7 +51,7 @@
             <h3>Current Month's Orders</h3>
             <p>total orders so far this month.</p>
         </div>
-
+        </a>
     </div>
 
     <div class="col-sm-3">
@@ -69,18 +70,21 @@
 
 <br />
 
+<div id="spend-analysis" class="page-header">
+    <h3>Spend Analysis</h3>
+</div>
 <div class="row">
     <div class="col-sm-8">
 
         <div class="panel panel-primary" id="charts_env">
 
             <div class="panel-heading">
-                <div class="panel-title">Monthly Spend To Date</div>
+                <div class="panel-title">Current Month - Daily Order Totals</div>
 
                 <div class="panel-options">
                     <ul class="nav nav-tabs">
-                        <li class=""><a href="#area-chart" data-toggle="tab">By Cateory</a></li>
-                        <li class="active"><a href="#line-chart" data-toggle="tab">By Supplier</a></li>
+<!--                        <li class=""><a href="#area-chart" data-toggle="tab">By Cateory</a></li>-->
+                        <li class="active"><a href="#line-chart" data-toggle="tab">By Order Date</a></li>
 <!--                        <li class=""><a href="#pie-chart" data-toggle="tab">Pie Chart</a></li>-->
                     </ul>
                 </div>
@@ -451,19 +455,23 @@
         // Line Charts
         var line_chart_demo = $("#line-chart-demo");
 
+        var day = insight.dailyOrderTotals;
+        if (day.length){
+            var linedata = [];
+            for (var i = 0; i < day.length; i++)
+            {
+                linedata.push({d: day[i].day, v:day[i].total, c:day[i].count });
+            }
+        }
+
         var line_chart = Morris.Line({
             element: 'line-chart-demo',
-            data: [
-                { y: '2014-01', a: 550, b: 110 },
-                { y: '2014-02', a: 495,  b: 135 },
-                { y: '2014-03', a: 750,  b: 120 },
-                { y: '2014-04', a: 635,  b: 120 },
-                { y: '2014-05', a: 705,  b: 85 },
-                { y: '2014-06', a: 790,  b: 105 }
-            ],
-            xkey: 'y',
-            ykeys: ['a', 'b'],
-            labels: ['36S', '3rd-Party'],
+            data: linedata,
+            xkey: 'd',
+            ykeys: ['v', 'c'],
+            xlabels: ['day'],
+            labels: ['Total AED', '# of orders'],
+            parseTime: false,
             redraw: true
         });
 
@@ -488,17 +496,20 @@
 //        donut_chart_demo.parent().attr('style', '');
 
         // Cateogory Donut Chart
+        var cat = insight.spendPerCategory;
+        if (cat.length){
+            var donutdata = [];
+            for (var i = 0; i < cat.length; i++)
+            {
+                donutdata.push({label: cat[i].category, value: cat[i].total});
+            }
+            console.log(donutdata)
+        }
+
+
         Morris.Donut({
             element: 'categorychart',
-            data: [
-                {label: "Paper", value: getRandomInt(10,50) + '00'},
-                {label: "Plastic", value: getRandomInt(10,70) + '00'},
-                {label: "Chemicals", value: getRandomInt(10,90) + '00'},
-                {label: "MEP", value: getRandomInt(10,90) + '00'},
-                {label: "Stationery", value: getRandomInt(10,30) + '00'},
-                {label: "PPE", value: getRandomInt(10,80) + '00'},
-                {label: "Construction", value: getRandomInt(10,20) + '00'}
-            ],
+            data: donutdata,
             colors: ['#f26c4f', '#00a651', '#00bff3', '#0072bc']
         });
 

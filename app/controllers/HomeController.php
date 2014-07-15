@@ -27,7 +27,9 @@ class HomeController extends BaseController {
         $ordersTodaySum = Portal::getReport('OrdersTodaySum', 'array')[0];
         $ordersPendingApproval = Portal::getReport('OrdersPendingApprovalSum', 'array')[0];
         $currentMonthsOrders = Portal::getReport('CurrentMonthsOrdersSum', 'array')[0];
+        $dailyOrderTotalsThisMonth = Portal::getReport('DailyOrderTotalsThisMonth', 'array');
         $thirdPartyOrdersThisMonthSum = Portal::getReport('ThirdPartyOrdersThisMonthSum', 'array')[0];
+        $spendPerCategoryThisMonthSum = Portal::getReport('SpendPerCategoryThisMonthSum', 'array');
 
         JavaScript::put([
             'ordersTodayCount' => $ordersTodaySum['count'],
@@ -36,8 +38,10 @@ class HomeController extends BaseController {
             'pendingApprovalValue' => $ordersPendingApproval['sum'],
             'monthlyOrderCount' => $currentMonthsOrders['count'],
             'monthlyOrderValue' => $currentMonthsOrders['sum'],
+            'dailyOrderTotals' => $dailyOrderTotalsThisMonth,
             'thirdPartyOrderCount' => $thirdPartyOrdersThisMonthSum['count'],
-            'thirdPartyOrderValue' => $thirdPartyOrdersThisMonthSum['sum']
+            'thirdPartyOrderValue' => $thirdPartyOrdersThisMonthSum['sum'],
+            'spendPerCategory' => $spendPerCategoryThisMonthSum
         ]);
 		return View::make('dashboards.dashboard4', array('title' => 'Dashboards') );
 	}
