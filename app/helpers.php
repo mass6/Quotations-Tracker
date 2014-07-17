@@ -1,5 +1,20 @@
 <?php
 
+
+function getUser()
+{
+    return Sentry::getUser()->id;
+}
+
+function fullname($user)
+{
+    return $user->first_name . ' ' . $user->last_name;
+}
+function getLayout()
+{
+    return Config::get('view.layout');
+}
+
 function gravatar_url($email)
 {
 	return 'http://gravatar.com/avatar/' . md5($email) . '?s=40';

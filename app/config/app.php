@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://quotations.dev',
+	'url' => getenv('APP_URL'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'Mzy1qUa79kBnaWsFc8leN4OKbQHa7yis',
+	'key' => getenv('APP_KEY'),
 
 	/*
 	|--------------------------------------------------------------------------
@@ -124,6 +124,7 @@ return array(
         'Way\Generators\GeneratorsServiceProvider',
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
         'Laracasts\Utilities\UtilitiesServiceProvider',
+        'Barryvdh\Debugbar\ServiceProvider',
 
 	),
 
