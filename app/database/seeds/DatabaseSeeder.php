@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder {
         $this->call('SuppliersTableSeeder');
         $this->call('CategoriesTableSeeder');
         $this->call('AttributesTableSeeder');
-        $this->call('ItemRequestsTableSeeder');
+        //$this->call('ItemRequestsTableSeeder');
         $this->call('QuotationsTableSeeder');
+        $this->call('ProfilesTableSeeder');
 	}
 
 }
