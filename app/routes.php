@@ -76,13 +76,14 @@ Route::resource('sessions', 'SessionsController', ['only' => ['create', 'store',
 Route::group(array('before' => 'auth'), function()
 {
     // Home page
-    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@getDashboard']);
+    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 
     // User Profiles
     Route::group(array('before' => 'user'), function()
     {
         Route::get('profile/{user}/edit', ['as'=>'profile.edit', 'uses'=>'ProfilesController@edit']);
         Route::patch('profile/{user}', ['as'=>'profile.update', 'uses'=>'ProfilesController@update']);
+        Route::get('profile/{user}', ['as'=>'profile.show', 'uses'=>'ProfilesController@show']);
     });
 
     // Customers

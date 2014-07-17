@@ -25,8 +25,7 @@ class UsersController extends \BaseController {
 	public function create()
 	{
 		$groups = Sentry::findAllGroups();
-		return View::make('users.create')
-		->with('groups');
+		return View::make('users.create', compact('groups'));
 	}
 
 
@@ -41,7 +40,6 @@ class UsersController extends \BaseController {
 		$input = Input::all();
         User::$rules['password'] = 'required|confirmed';
 		$validation = Validator::make($input, User::$rules);
-        Log::info('test');
 		if ($validation->passes())
 		{
 		   $user = Sentry::createUser(array(
@@ -51,6 +49,13 @@ class UsersController extends \BaseController {
 		   		'password'	    => $input['password'],
 		   		'activated'		=> true,
 		   	));
+
+            // update group memberships
+            if (! isset($input['group_membership']))
+            {
+                $input['group_membership'] = array();
+            }
+            $this->updateGroupMemberships($user, $input['group_membership']);
 
            Profile::create(['user_id' => $user->id]);
 

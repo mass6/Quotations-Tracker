@@ -1,5 +1,7 @@
 <?php
 use Insight\Entities\Profile;
+use Insight\Entities\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProfilesController extends \BaseController
 {
@@ -158,25 +160,58 @@ class ProfilesController extends \BaseController
 		}
 	}
 
+    public function show($id)
+    {
+        try
+        {
+            $user = User::with('profile')->findOrFail($id);
+            if (! $user->profile){
+                $user->profile = new Profile;
+                $user->profile()->save($user->profile);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return Redirect::route('home');
+        }
+        return View::make('users.profiles.show', compact('user'));
+    }
+
     public function edit($id)
     {
-        $profile = Profile::find($id);
+        try
+        {
+            $user = User::findOrFail($id);
+            if (! $user->profile){
+                $user->profile = new Profile;
+                $user->profile()->save($user->profile);
+            }
+        }
+        catch(ModelNotFoundException $e)
+        {
+            return Redirect::route('home');
+        }
 
-        return View::make('profiles.edit', compact('profile'));
+        return View::make('profiles.edit', compact('user'));
     }
 
     public function update($id)
     {
-        $profile = Profile::find($id);
+        $user = User::findOrFail($id);
         $input = Input::all();
-        if (! $profile->update($input))
+
+        if (! $user->profile->fill($input)->save())
         {
-            return Redirect::back()->withInput()->withErrors($profile->getErrors());
+
+            return Redirect::back()->withInput()->withErrors($user->profile->getErrors())
+                ->with('flash_message', 'There were validation issues.')
+                ->with('success', false)
+                ->with('validationfailed', true);
         }
         else
         {
-            return Redirect::home()
-                ->with('flash_message', 'Customer was successfully updated.')
+            return Redirect::route('profile.show', $id)
+                ->with('flash_message', 'You profile was successfully updated.')
                 ->with('success', true);
         }
 

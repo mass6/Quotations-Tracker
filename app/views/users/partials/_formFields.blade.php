@@ -14,7 +14,7 @@
 
       <div class="form-group">
       {{ Form::label('email', 'Email:') }}
-      {{ Form::text('email', null, ['class' => 'form-control']) }}
+      {{ Form::text('email', null, ['class' => 'form-control', 'autocomplete'=>'off']) }}
       {{ $errors->first('email', '<span class="label label-warning">:message</span>') }}
       </div>
 

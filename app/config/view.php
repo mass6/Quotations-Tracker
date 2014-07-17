@@ -28,4 +28,15 @@ return array(
 
 	'pagination' => 'pagination::slider-3',
 
+    /*
+	|--------------------------------------------------------------------------
+	| Default Layout
+	|--------------------------------------------------------------------------
+	|
+	| This view will be used to as the default view layout.
+	|
+	*/
+
+    'layout' => 'layouts.main',
+
 );

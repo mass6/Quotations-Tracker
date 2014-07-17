@@ -2,26 +2,11 @@
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
-use Codesleeve\Stapler\ORM\StaplerableInterface;
-use Codesleeve\Stapler\ORM\EloquentTrait;
 use Eloquent;
 
 
-class User extends Eloquent implements UserInterface, RemindableInterface, StaplerableInterface
+class User extends Eloquent implements UserInterface, RemindableInterface
 {
-
-    use EloquentTrait;
-
-    public function __construct(array $attributes = array()) {
-        $this->hasAttachedFile('avatar', [
-            'styles' => [
-                'medium' => '300x300',
-                'thumb' => '100x100'
-            ]
-        ]);
-
-        parent::__construct($attributes);
-    }
 
     /**
      * Defined attributes that may not be mass-assigned
@@ -46,8 +31,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
      */
 	public static $rules = [
 		'email'		 => 'required|email',
-		'first_name' =>	'required',
-		'last_name'	 =>	'required',
 		'password'   => 'confirmed',
 	];
 
@@ -57,6 +40,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface, Stapl
 	 * @var string
 	 */
 	protected $table = 'users';
+
+    /**
+     * Array of dates that shall be treated as Carbon objects
+     *
+     * @var array
+     */
+    protected $dates = array('last_login');
 
 	/**
 	 * The attributes excluded from the model's JSON form.

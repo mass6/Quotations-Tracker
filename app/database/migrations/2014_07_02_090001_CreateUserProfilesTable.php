@@ -16,10 +16,13 @@ class CreateUserProfilesTable extends Migration {
 		{
 			$table->increments('id');
             $table->integer('user_id');
-			$table->text('bio')->nullable();
+			$table->string('position')->nullable();
+			$table->string('department')->nullable();
+			$table->string('location')->nullable();
             $table->string('mobile')->nullable();
             $table->string('skype_name')->nullable();
-			$table->timestamps();
+            $table->text('bio')->nullable();
+            $table->timestamps();
 		});
 	}
 

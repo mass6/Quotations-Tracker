@@ -29,7 +29,6 @@ class Portal
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         $response = curl_exec($ch);
         curl_close($ch);
-        Log::info($response);
         if ($format !== 'json'){
             return object_to_array(json_decode($response));
         }

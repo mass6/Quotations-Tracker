@@ -22,7 +22,7 @@
             <span class="lab">AED </span><div id="orders-today-value" class="val" data-start="0" data-end="0" data-postfix="" data-duration="1500" data-delay="0">0</div>
 
             <h3>Orders Today</h3>
-            <p>placed so far today on our portal.</p>
+            <p>orders placed so far today .</p>
         </div>
         </a>
 
@@ -503,7 +503,6 @@
             {
                 donutdata.push({label: cat[i].category, value: cat[i].total});
             }
-            console.log(donutdata)
         }
 
 

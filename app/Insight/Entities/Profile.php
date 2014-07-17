@@ -32,7 +32,7 @@ class Profile extends BaseModel implements StaplerableInterface
      * @var array
      */
     public static $rules = [
-        'bio'		 	=> 	'max:1000',
+        'bio'		 	=> 	'max:10',
     ];
 
     /**

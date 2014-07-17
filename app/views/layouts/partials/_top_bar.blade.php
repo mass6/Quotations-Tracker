@@ -9,7 +9,7 @@
     <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->
 
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="{{URL::asset('images/profile-picture.png') }}{{-- User::find(Sentry::getUser()->id)->avatar->url('thumb') --}}" alt="" class="img-circle" width="44" />
+            <img src="{{ isset($user) ? $user->profile->avatar->url('thumb') : '' }}" alt="" class="img-circle" width="44" />
             {{ isset($user) ? $user->first_name : '' }}
         </a>
 
@@ -20,32 +20,32 @@
 
             <!-- Profile sub-links -->
             <li>
-                <a href="{{ route('profile.edit', Sentry::getUser()->id) }}">
+                <a href="{{ route('profile.show', Sentry::getUser()->id) }}">
                     <i class="entypo-user"></i>
-                    Edit Profile
+                    Profile
                 </a>
             </li>
 
-            <li>
-                <a href="mailbox.html">
-                    <i class="entypo-mail"></i>
-                    Inbox
-                </a>
-            </li>
-
-            <li>
-                <a href="extra-calendar.html">
-                    <i class="entypo-calendar"></i>
-                    Calendar
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="entypo-clipboard"></i>
-                    Tasks
-                </a>
-            </li>
+<!--            <li>-->
+<!--                <a href="mailbox.html">-->
+<!--                    <i class="entypo-mail"></i>-->
+<!--                    Inbox-->
+<!--                </a>-->
+<!--            </li>-->
+<!---->
+<!--            <li>-->
+<!--                <a href="extra-calendar.html">-->
+<!--                    <i class="entypo-calendar"></i>-->
+<!--                    Calendar-->
+<!--                </a>-->
+<!--            </li>-->
+<!---->
+<!--            <li>-->
+<!--                <a href="#">-->
+<!--                    <i class="entypo-clipboard"></i>-->
+<!--                    Tasks-->
+<!--                </a>-->
+<!--            </li>-->
         </ul>
     </li>
 

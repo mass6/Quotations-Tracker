@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends(Config::get('view.layout'))
 
 @section('content')
 	<div class="container">
@@ -8,4 +8,5 @@
 		</div>
 	<div>
         <div class="clearfix"></div>
+        <p>{{ Config::get('app.layout'); }}</p>
 @stop
