@@ -129,7 +129,7 @@
                 console.log(pageTotal);
                 // Update footer
                 $( api.column( 6 ).footer() ).html(
-                    '$'+pageTotal +' ( $'+ total +' total)'
+                    '$'+ Math.round(pageTotal*100)/100 +' ( $'+ Math.round(total*100)/100 +' total)'
                 );
             },
             "order": [[2, 'asc']],
