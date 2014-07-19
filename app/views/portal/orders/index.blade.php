@@ -80,10 +80,8 @@
                     "bSortable": false,
                     "mRender": function (data, type, full)
                     {
-                        // oObj.aData[0] returns the RoleId
                         var id = full['entity_id']; //row id in the first column
                         return "<a href='/portal/orders/details/"+id+"'>View</a>";
-                        //return '<a href="javascript:;" onclick="' + "jQuery('#modal-1').modal('show');" + '"' + 'class="btn btn-default">Show Me</a>';
                     }
                 },
                 { "data": "ordered_by", "visible":false },
@@ -128,9 +126,10 @@
                     } ) :
                     0;
 
+                console.log(pageTotal);
                 // Update footer
                 $( api.column( 6 ).footer() ).html(
-                    '$'+pageTotal.toFixed(2) +' ( $'+ total.toFixed(2) +' total)'
+                    '$'+pageTotal +' ( $'+ total +' total)'
                 );
             },
             "order": [[2, 'asc']],
