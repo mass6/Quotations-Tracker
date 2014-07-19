@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{{ URL::asset('css/neon-theme.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/neon-forms.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('css/emrill.css') }}">
 
     <script src="{{ URL::asset('js/jquery-1.11.0.min.js') }}"></script>
 
@@ -40,18 +41,14 @@
 </script>
 
 <div class="login-container">
-    @if (Session::has('flash_message'))
-    <div class="row alert {{ Session::get('success') ? 'alert-success' : 'alert-danger' }} clearfix" data-dismiss="alert">
-        {{ Session::get('flash_message') }}
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    </div>
-    @endif
+
     <div class="login-header login-caret">
 
         <div class="login-content">
 
             <a href="index.html" class="logo">
-                <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />
+<!--                <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />-->
+                <img src="{{ URL::asset('images/emrill-200.png') }}" width="200px" alt="" />
             </a>
 
             <p class="description">Hello again! Please log in to access this site.</p>
@@ -75,7 +72,7 @@
 
             <div class="form-login-error">
                 <h3>Invalid login</h3>
-                <p>Enter <strong>demo</strong>/<strong>demo</strong> as login and password.</p>
+                <p>Please try again.</p>
             </div>
 
             <form method="post" role="form" id="form_login">

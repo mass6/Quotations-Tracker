@@ -1,6 +1,7 @@
 <?php
 use Insight\Entities\User;
 use Insight\Entities\Profile;
+use Insight\Entities\Customer;
 
 class UsersController extends \BaseController {
 
@@ -25,7 +26,9 @@ class UsersController extends \BaseController {
 	public function create()
 	{
 		$groups = Sentry::findAllGroups();
-		return View::make('users.create', compact('groups'));
+        $customers = Customer::lists('name', 'code');
+        $customers[''] = "N/A";
+		return View::make('users.create', compact('groups', 'customers'));
 	}
 
 
@@ -38,6 +41,9 @@ class UsersController extends \BaseController {
 	{
 
 		$input = Input::all();
+        if ($input['type'] == 2)
+            $input['customer'] = $input['customer'];
+        else $input['customer'] = null;
         User::$rules['password'] = 'required|confirmed';
 		$validation = Validator::make($input, User::$rules);
 		if ($validation->passes())
@@ -47,6 +53,8 @@ class UsersController extends \BaseController {
 		   		'last_name'		=> $input['last_name'],
 		   		'email'			=> $input['email'],
 		   		'password'	    => $input['password'],
+		   		'type'	        => $input['type'],
+		   		'customer'	    => $input['customer'],
 		   		'activated'		=> true,
 		   	));
 
@@ -91,8 +99,10 @@ class UsersController extends \BaseController {
 	public function edit($id)
 	{
 		$user = User::find($id);
-		return View::make('users.edit')
+        $customers = Customer::lists('name', 'code');
+        return View::make('users.edit')
 		->with('user', $user)
+        ->with('customers', $customers)
 		->with('membership', getGroupMemberships($user->id, 'id'));
 	}
 
@@ -114,7 +124,10 @@ class UsersController extends \BaseController {
             $user->email = $input['email'];
             $user->first_name = $input['first_name'];
             $user->last_name = $input['last_name'];
-            $user->avatar = $input['avatar'];
+            $user->type = $input['type'];
+            if ($input['type'] == 2)
+             $user->customer = $input['customer'];
+            else $user->customer = null;
 
             // check if password was updated
             if ($input['password'] && $input['password_confirmation'])

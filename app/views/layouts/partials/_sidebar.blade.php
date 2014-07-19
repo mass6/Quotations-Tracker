@@ -6,7 +6,8 @@
     <!-- logo -->
     <div class="logo">
         <a href="/">
-            <img src="{{ URL::asset('/images/insight-120.png') }}" alt="36S" />
+<!--            <img src="{{ URL::asset('/images/insight-120.png') }}" alt="36S" />-->
+            <img src="{{ URL::asset('/images/emrill-cafe.png') }}" width="150px" alt="Emrill Services LLC." />
         </a>
     </div>
 

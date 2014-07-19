@@ -17,7 +17,8 @@ class Customer extends BaseModel
      * @var array
      */
     public static $rules = [
-        'name'		 	=> 	'required|max:255|unique:customers',
+        'code'		 	=> 	'required|max:255|unique:customers',
+        'name'		 	=> 	'required|max:255',
     ];
 
     /**

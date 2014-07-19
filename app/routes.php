@@ -15,6 +15,9 @@
 //dd($date->format('d-m-Y'));
 
 
+Route::get('/sam', function(){
+    return Config::get('view.layout.customer.emrill', 'None');
+});
 //DB::listen(function($sql){
 //    //var_dump($sql);
 //});

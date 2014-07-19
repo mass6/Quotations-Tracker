@@ -19,7 +19,9 @@
     <link rel="stylesheet" href="{{ URL::asset('css/neon-theme.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/neon-forms.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('css/emrill.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/styles.css') }}">
+
 
     <script src="{{ URL::asset('js/jquery-1.11.0.min.js') }}"></script>
 
