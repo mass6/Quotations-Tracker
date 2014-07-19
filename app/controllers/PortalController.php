@@ -165,7 +165,8 @@ class PortalController extends \BaseController {
 
     public function getApprovals()
     {
-        return View::make('layouts.partials._placeholder', ['heading' => 'Approval Statistics']);
+        //return $report = Portal::getReport('ordersPendingApproval', 'array');
+        return View::make('portal.approvals.index')->with(['reportName' => 'ordersPendingApproval']);
     }
 
     public function getDoa()

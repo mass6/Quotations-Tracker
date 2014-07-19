@@ -81,7 +81,7 @@
                     "mRender": function (data, type, full)
                     {
                         var id = full['entity_id']; //row id in the first column
-                        return "<a href='/portal/orders/details/"+id+"'>View</a>";
+                        return "<a href='/portal/orders/details/"+id+"' class='btn btn-primary'>View</a>";
                     }
                 },
                 { "data": "ordered_by", "visible":false },
