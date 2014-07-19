@@ -19,7 +19,6 @@
     <link rel="stylesheet" href="{{ URL::asset('css/neon-theme.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/neon-forms.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/custom.css') }}">
-    <link rel="stylesheet" href="{{ URL::asset('css/emrill.css') }}">
 
     <script src="{{ URL::asset('js/jquery-1.11.0.min.js') }}"></script>
 
@@ -47,8 +46,7 @@
         <div class="login-content">
 
             <a href="index.html" class="logo">
-<!--                <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />-->
-                <img src="{{ URL::asset('images/emrill-200.png') }}" width="200px" alt="" />
+                <img src="{{ URL::asset('images/insight-120.png') }}" width="120" alt="" />
             </a>
 
             <p class="description">Hello again! Please log in to access this site.</p>

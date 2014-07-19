@@ -15,9 +15,9 @@
 //dd($date->format('d-m-Y'));
 
 
-Route::get('/sam', function(){
-    return Config::get('view.layout.customer.emrill', 'None');
-});
+//Route::get('/sam', function(){
+//    return Config::get('view.layout.customer.emrill', 'None');
+//});
 //DB::listen(function($sql){
 //    //var_dump($sql);
 //});
@@ -79,7 +79,7 @@ Route::resource('sessions', 'SessionsController', ['only' => ['create', 'store',
 Route::group(array('before' => 'auth'), function()
 {
     // Home page
-    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
+    Route::get('/', ['as' => 'home', 'uses' => 'HomeController@getDashboard']);
 
     // User Profiles
     Route::group(array('before' => 'user'), function()
