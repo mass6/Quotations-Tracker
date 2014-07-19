@@ -88,18 +88,19 @@
     @endforeach
     </ul>
 
-    <!-- Pager for search results -->
-    <ul class="pager">
-        <li><a href="#"><i class="entypo-left-thin"></i> Previous</a></li>
-        <li><a href="#">Next <i class="entypo-right-thin"></i></a></li>
-    </ul>
 </div>
-
-
 
 </div>
 @endif
 </div>
-</div>
 
+</div>
+    <div class="row">
+        <!-- Pager for search results -->
+        <ul class="pager">
+            <li><a href="#"><i class="entypo-left-thin"></i> Previous</a></li>
+            <li><a href="#">Next <i class="entypo-right-thin"></i></a></li>
+        </ul>
+    </div>
+</div>
 @stop

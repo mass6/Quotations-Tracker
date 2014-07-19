@@ -2,89 +2,121 @@
 
 @section('links')
 
-		<link rel="stylesheet" type="text/css" href="{{ URL::asset('js/datatables/css/jquery.dataTables.css') }}">
-		<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css">   
-		<style>
-		   table form { margin-bottom: 0; }
-		   form ul { margin-left: 0; list-style: none; }
-		   .error { color: red; font-style: italic; }
-		</style>
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('js/datatables/css/jquery.dataTables.css') }}">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/28e7751dbec/integration/bootstrap/3/dataTables.bootstrap.css">
+<style>
+    table.users, table.addresses {border:1px solid #dddddd;}
+    .users td, .addresses td {border:none;}
+    td.details-control1, td.details-control2 {
+        background: url('{{ URL::asset("js/datatables/resources/details_open.png") }}') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown1 td.details-control1, tr.shown2 td.details-control2 {
+        background: url('{{ URL::asset("js/datatables/resources/details_close.png") }}') no-repeat center center;
+    }
+    tr.row-header {background-color: #DDDDDD !important;}
+    td.column-header {width: 100% !important;color:#464646}
+    .users tr {border-bottom: 1px solid #ddd;}
+    td.col-label {color:#464646;}
+    td.col-value {border-right:1px solid #DDDDDD;}
+    table.addresses tr td.col-label {text-decoration: underline;}
+
+
+</style>
+<script>
+    var reportname = "<?php echo $reportName; ?>";
+</script>
 
 <script class="init" type="text/javascript">
-    $(document).ready(function() {
-        $('#datatable').dataTable({
-            "sPaginationType": "bootstrap",
-            "sDom": "<'row'<'col-xs-6 col-left'l><'col-xs-6 col-right'<'export-data'T>f>r>t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
-            "oTableTools": {
-                "sSwfPath": "{{ URL::asset('/js/datatables/copy_csv_xls_pdf.swf') }}",
-                "aButtons": [
-                    "print",
-                    {
-                        "sExtends": "pdf",
-                        "sFileName": "users.pdf"
-                    },
-                    {
-                        "sExtends": "csv",
-                        "sFileName": "users.csv"
-                    },
-                    {
-                        "sExtends": "xls",
-                        "sFileName": "users.xls"
-                    }
-                ]
-            },
-            "columnDefs": [ {
-                "targets": [4,5],
-                "width": "20%",
-                "orderable" : false
-            } ]
-        });
+
+$(document).ready(function() {
+    var table = $('#datatable').DataTable({
+        "ajax": {
+            "url" : "/ajax/" + reportname,
+            "dataSrc": ""
+        },
+        "deferRender": true,
+        "columns": [
+            { "data": "entity_id", "visible":false },
+            { "data": "weborder" },
+            { "data": "total" },
+            { "data": "customer" },
+            { "data": "ordered_by" },
+            { "data": "contract" },
+            { "data": "created_at" },
+            { "data": "lead_time_hours" },
+            { "data": "total_lead_time_hours" },
+            { "data": "current_approver" },
+            { "data": "last_approver"},
+            {     // fifth column (Edit link)
+                "bSearchable": false,
+                "bSortable": false,
+                "mRender": function (data, type, full)
+                {
+                    var id = full['entity_id']; //row id in the first column
+                    return "<a href='/portal/orders/details/"+id+"' class='btn btn-primary'>View</a>";
+                }
+            }
+        ],
+        "order": [[7, 'desc']],
+        "sPaginationType": "bootstrap",
+        "pagingType": "full_numbers",
+        "sDom": "<'row'<'col-xs-6 col-left'l><'col-xs-6 col-right'<'export-data'T>f>r>t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+        "oTableTools": {
+            "sSwfPath": "{{ URL::asset('js/datatables/copy_csv_xls_pdf.swf') }}",
+            "aButtons": [
+                "print",
+                {
+                    "sExtends": "pdf",
+                    "sFileName": "orders_pending_approval.pdf",
+                    "mColumns": [ 1,2,3,4,5,6 ]
+                },
+                {
+                    "sExtends": "csv",
+                    "sFileName": "orders_pending_approval.csv",
+                    "mColumns": [ 2,3,4,5,6]
+                },
+                {
+                    "sExtends": "xls",
+                    "sFileName": "orders_pending_approval.xls",
+                    "mColumns": [ 1,2,3,4,5,6]
+                }
+            ]
+        }
     });
+});
 </script>
 
 @stop
 
 @section('content')
-   
-   <div class="row">
-   <div class="page-header">
-   	<h1>All Users</h1>
-   	<p class="text-left">{{ link_to_route('admin.users.create', 'Add new user', null, array('class'=>'btn btn-info')) }}</p>
-   	</div>
-   @if ($users->count())
-       <table id="datatable" class="table table-striped table-bordered">
-			<thead> 
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Email</th>
-					<th>Groups</th>
-					<th>Actions</th>
-					<th></th>
-			    </tr>
-			</thead>
-			<tbody>
-			@foreach ($users as $user)
-			    <tr>
-					<td>{{ $user->first_name }}</td>
-					<td>{{ $user->last_name }}</td>
-					<td>{{ $user->email }}</td>
-					<td>{{ getGroupMemberships($user->id) }}</td>
-					<td>{{ link_to_route('admin.users.edit', 'Edit', array($user->id), array('class' => 'btn btn-primary')) }}</td>
-					<td>
-			          	{{ Form::open(array('method' => 'DELETE', 'route' => array('admin.users.destroy', $user->id))) }}
-			            	{{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-                       	{{ Form::close() }}
-                   </td>
-               </tr>
-           	@endforeach
-			</tbody>
-       </table>
-       <div>
-       	{{-- $users->links() --}}
-       </div>
-   @else
-       There are no users
-   @endif
-   </div>
+
+<h2>Orders Pending Approval</h2>
+
+<table id="datatable" class="table table-bordered datatable">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Weborder</th>
+        <th>Total</th>
+        <th>Customer</th>
+        <th>Ordered By</th>
+        <th>Contract</th>
+        <th>Ordered On</th>
+        <th>Current Lead Time (hrs)</th>
+        <th>Total Lead Time (hrs)</th>
+        <th>Current Approver</th>
+        <th>Last Approver</th>
+        <th>Options</th>
+    </tr>
+    </thead>
+
+</table>
+
+
+
+
+
+@include('layouts.partials.scripts._datatables')
+
 @stop
