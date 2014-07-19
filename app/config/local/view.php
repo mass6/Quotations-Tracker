@@ -11,6 +11,12 @@ return array(
 	|
 	*/
 
-    'layout' => 'layouts.main',
+    'layout' => [
+        'default'   => 'layouts.main',
+        'customer'  => [
+            'emrill' => 'dev',
+
+        ],
+    ],
 
 );

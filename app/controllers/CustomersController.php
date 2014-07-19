@@ -34,13 +34,16 @@ class CustomersController extends \BaseController {
      */
     public function store()
     {
-        $customer = new Customer(Input::all());
+        $customer = new Customer(Input::except('layout'));
         if (! $customer->save())
         {
             return Redirect::back()->withInput()->withErrors($customer->getErrors());
         }
         else
         {
+            if (Input::has('layout')){
+                Config::set('view.layout.customer.emrill', 'main');
+            }
             return Redirect::route('customers.index')
                 ->with('flash_message', 'Customer was successfully created.')
                 ->with('success', true);
@@ -81,7 +84,7 @@ class CustomersController extends \BaseController {
      */
     public function update($id)
     {
-        $input = Input::all();
+        $input = Input::except('layout');
         $customer = Customer::find($id);
         if (! $customer->update($input))
         {
@@ -89,6 +92,11 @@ class CustomersController extends \BaseController {
         }
         else
         {
+            if (Input::has('layout')){
+                Config::set('view.layout.customer.emrill', 'main');
+                Log::info('Layout: ' . Config::get('view.layout.customer.' . $customer->code));
+            }
+
             return Redirect::route('customers.index')
                 ->with('flash_message', 'Customer was successfully updated.')
                 ->with('success', true);

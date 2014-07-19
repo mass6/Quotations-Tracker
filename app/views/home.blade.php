@@ -1,4 +1,4 @@
-@extends(Config::get('view.layout'))
+@extends(getLayout())
 
 @section('content')
 	<div class="container">

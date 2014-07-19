@@ -27,9 +27,18 @@ class GroupsTableSeeder extends Seeder
 	    Sentry::createGroup(array(
 	        'name'        => 'Members',
 	        'permissions' => array(
-	            'users' => 1,
+                'reports' => 1,
+                'item_requests' => 1,
 	        ),
 	    ));
+
+        Sentry::createGroup(array(
+            'name'        => 'Emrill',
+            'permissions' => array(
+                'reports' => 1,
+                'item_requests' =>0,
+            ),
+        ));
 
 	}
 }

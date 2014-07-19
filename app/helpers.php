@@ -10,9 +10,9 @@ function fullname($user)
 {
     return $user->first_name . ' ' . $user->last_name;
 }
-function getLayout()
+function getLayout($code = null)
 {
-    return Config::get('view.layout');
+    return Config::get('view.layout.customer.' . $code, Config::get('view.layout.default', 'layouts.main'));
 }
 
 function gravatar_url($email)

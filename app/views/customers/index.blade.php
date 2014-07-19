@@ -57,6 +57,7 @@
     <table id="datatable" class="table table-striped table-bordered">
         <thead>
         <tr>
+            <th>Code</th>
             <th>Name</th>
             <th>Options</th>
         </tr>
@@ -64,6 +65,7 @@
         <tbody>
         @foreach ($customers as $customer)
         <tr>
+            <td>{{ $customer->code }}</td>
             <td>{{ $customer->name }}</td>
             <td>
                 {{ Form::open(array('method' => 'DELETE', 'route' => array('customers.destroy', $customer->id), 'class'=>'form-inline')) }}
