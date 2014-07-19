@@ -66,8 +66,8 @@ class HomeController extends BaseController {
 //        File::put($filepath, $output);
 //        return View::make('contracts.index', compact('contracts', 'reportName'));
 
-        $contracts = Portal::getReport('contracts');
-        return $contracts;
+        $report = Portal::getReport('OrdersYesterday', 'array');
+        return $report;
 	}
 
     public function testService()
