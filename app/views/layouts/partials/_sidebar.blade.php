@@ -170,6 +170,7 @@
 <!--        </li>-->
     </ul>
 </li>
+@if ($user->type !== '2')
 <li class="auto-inherit-active-class {{ isActive('customers', 1, true) }}{{ isActive('suppliers', 1, true) }}">
     <a href="{{ route('customers.index') }}">
         <i class="entypo-users"></i>
@@ -188,6 +189,7 @@
         </li>
     </ul>
 </li>
+@endif
 
 </ul>
 

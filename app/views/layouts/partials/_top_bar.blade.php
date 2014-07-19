@@ -3,13 +3,21 @@
 <!-- Profile Info and Notifications -->
 <div class="col-md-6 col-sm-8 clearfix">
 
+<!-- logo -->
+<!--<div class="branding pull-left" style="margin-right: 20px;">-->
+<!--    <a href="/">-->
+<!--        <img src="{{ URL::asset('/images/emrill-logo-100.png') }}"  alt="36S" />-->
+<!--                    <img src="{{ URL::asset('/images/emrill-cafe.png') }}" width="150px" alt="Emrill Services LLC." />-->
+<!--    </a>-->
+<!--</div>-->
+
 <ul class="user-info pull-left pull-none-xsm">
 
     <!-- Profile Info -->
     <li class="profile-info dropdown"><!-- add class "pull-right" if you want to place this from right -->
 
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <img src="{{ isset($user) ? isset($user->profile) ? $user->profile->avatar->url('thumb') : '' : '' }}" alt="" class="img-circle" width="44" />
+            <img src="{{ isset($user) && $user->profile ? $user->profile->avatar->url('thumb') : '' }}" alt="" class="img-circle" width="44" />
             {{ isset($user) ? $user->first_name : '' }}
         </a>
 
