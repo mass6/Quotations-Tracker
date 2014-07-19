@@ -48,7 +48,7 @@ class UsersController extends \BaseController {
 		$validation = Validator::make($input, User::$rules);
 		if ($validation->passes())
 		{
-		   $user = Sentry::createUser(array(
+		   $newuser = Sentry::createUser(array(
 		   		'first_name'	=> $input['first_name'],
 		   		'last_name'		=> $input['last_name'],
 		   		'email'			=> $input['email'],
@@ -63,9 +63,9 @@ class UsersController extends \BaseController {
             {
                 $input['group_membership'] = array();
             }
-            $this->updateGroupMemberships($user, $input['group_membership']);
+            $this->updateGroupMemberships($newuser, $input['group_membership']);
 
-           Profile::create(['user_id' => $user->id]);
+           Profile::create(['user_id' => $newuser->id]);
 
 		   return Redirect::route('admin.users.index')
 		   		->with('flash_message', 'User was successfully added')
