@@ -185,14 +185,14 @@ class PortalController extends \BaseController {
         return View::make('portal.orders.index', compact('reportName', 'heading'));
     }
 
-    public function getOrderDetails($id, $customerGroup = 'emrill')
+    public function getOrderDetails($id, $customerGroup)
     {
         $order = Portal::getReport('orderDetails', 'array', 'search', $customerGroup, $id)[0];
         $items = Portal::getReport('orderItemDetails', 'array', 'search', $customerGroup, $id);
         return View::make('portal.orders.show', compact('order', 'items'));
     }
 
-    public function searchOrders($customerGroup = 'emrill')
+    public function searchOrders($customerGroup)
     {
         $results = null;
         $q = Input::has('q') ? Input::get('q') : null;

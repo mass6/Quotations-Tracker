@@ -20,8 +20,6 @@
     td.col-label {color:#464646;}
     td.col-value {border-right:1px solid #DDDDDD;}
     table.addresses tr td.col-label {text-decoration: underline;}
-
-
 </style>
 <script>
     var reportname = "<?php echo $reportName; ?>";
@@ -129,7 +127,7 @@
                 console.log(pageTotal);
                 // Update footer
                 $( api.column( 6 ).footer() ).html(
-                    '$'+ Math.round(pageTotal*100)/100 +' ( $'+ Math.round(total*100)/100 +' total)'
+                    '$'+ Math.round(pageTotal*100)/100 +' ( AED'+ Math.round(total*100)/100 +' total)'
                 );
             },
             "order": [[2, 'asc']],

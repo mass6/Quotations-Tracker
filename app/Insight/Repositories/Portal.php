@@ -19,7 +19,7 @@ class Portal
      * @param null $search
      * @return array|mixed
      */
-    public static function getReport($query, $format = 'json', $type = 'query', $group = 'emrill', $search = null)
+    public static function getReport($query, $format = 'json', $type = 'query', $group = '', $search = null)
     {
         $data = array('key'=>sha1(getenv('WS_KEY')), 'queryName' => ucwords($query), 'queryType' => $type, 'group' => $group, 'search' => $search);
         $ch = curl_init();
@@ -28,6 +28,7 @@ class Portal
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         $response = curl_exec($ch);
+        Log::info($response);
         curl_close($ch);
         if ($format !== 'json'){
             return object_to_array(json_decode($response));

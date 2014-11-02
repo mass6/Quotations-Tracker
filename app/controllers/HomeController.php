@@ -43,7 +43,7 @@ class HomeController extends BaseController {
             'thirdPartyOrderValue' => $thirdPartyOrdersThisMonthSum['sum'],
             'spendPerCategory' => $spendPerCategoryThisMonthSum
         ]);
-		return View::make('dashboards.dashboard4', array('title' => 'Dashboards') );
+		return View::make('dashboards.dashboard3', array('title' => 'Dashboards') );
 	}
 
     public function getReport()

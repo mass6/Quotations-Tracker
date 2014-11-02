@@ -52,8 +52,8 @@ App::bind('SneadInterface', 'Snead');
 //
 //});
 //
-//Route::get('/reports' , 'HomeController@getReport');
-//Route::get('/service' , 'HomeController@testService');
+Route::get('/reports' , 'HomeController@getReport');
+Route::get('/service' , 'HomeController@testService');
 
 /*****************************************************
  *
