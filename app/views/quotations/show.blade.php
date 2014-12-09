@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="form-group">
-                    <?php $type = 'Quotation'; ?>
+                    <?php $type = 'Insight\Entities\Quotation'; ?>
                     <?php $id = $quotation['id']; ?>
                     @include('comments._form')
                 </div>

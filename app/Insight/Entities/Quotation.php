@@ -80,7 +80,7 @@ class Quotation extends BaseModel
      */
     public function supplier()
     {
-        return $this->belongsTo('Insight\Entities\supplier');
+        return $this->belongsTo('Insight\Entities\Supplier');
     }
 
     /**

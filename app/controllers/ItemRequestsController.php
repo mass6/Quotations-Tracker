@@ -107,7 +107,6 @@ class ItemRequestsController extends \BaseController {
 	public function show($id)
 	{
         $item_request = ItemRequest::find($id);
-
         $usersList = User::lists('first_name', 'id');
 
         if ( $item_request->attributes )

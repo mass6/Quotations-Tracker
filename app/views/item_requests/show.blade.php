@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="form-group">
-                        <?php $type = 'ItemRequest'; ?>
+                        <?php $type = 'Insight\Entities\ItemRequest'; ?>
                         <?php $id = $item_request['id']; ?>
                         @include('comments._form')
                     </div>

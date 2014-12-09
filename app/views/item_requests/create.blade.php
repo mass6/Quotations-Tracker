@@ -1,9 +1,5 @@
 @extends('layouts.main')
 
-@section('links')
-<link rel="stylesheet" href="{{ URL::asset('js/dropzone/dropzone.css') }}">
-@stop
-
 @section('content')
 
 <div class="container col-md-6 col-md-offset-3">
@@ -56,7 +52,7 @@
 
 @section('bottomlinks')
 <script src="{{ URL::asset('js/bootstrap-datepicker.js') }}"></script>
-<!--<script src="{{ URL::asset('js/fileinput.js') }}"></script>-->
-<script src="{{ URL::asset('js/dropzone/dropzone.js') }}"></script>
+<!--<script src="{{ URL::asset('js/fileinput.js') }}"></script>--><!-- 
+<script src="{{ URL::asset('js/dropzone/dropzone.js') }}"></script> -->
 <!--<script src="{{ URL::asset('js/neon-demo.js') }}"></script>-->
 @stop
